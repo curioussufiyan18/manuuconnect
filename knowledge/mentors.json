@@ -1,0 +1,406 @@
+{
+  "alumni_mentors": {
+    "mentor_profiles": [
+      {
+        "name": "Mohd Shahid",
+        "role": "Computer Vision Engineer",
+        "company": "Nabeh",
+        "experience_year": 2024
+      },
+      {
+        "name": "Md Tafsirul Haque Danish",
+        "role": "Senior Frontend Developer",
+        "company": "Oracle",
+        "experience_year": 2013
+      },
+      {
+        "name": "Md Seraj Ahmad",
+        "role": "Software Engineer",
+        "company": "Bharat Electronic Limited.",
+        "experience_year": 2023
+      },
+      {
+        "name": "Rehan Ansari",
+        "role": "Software Engineer",
+        "company": "Clover Infotech Pvt Ltd",
+        "experience_year": 2018
+      },
+      {
+        "name": "Asad Ahmad",
+        "role": "Application Development Analyst",
+        "company": "Accenture",
+        "experience_year": 2021
+      },
+      {
+        "name": "Md Anash Ansari",
+        "role": "Senior Software Developer",
+        "company": "IntraEdge",
+        "experience_year": 2019
+      },
+      {
+        "name": "MOHAMMAD KHALID ANSARI",
+        "role": "Associate Cloud Engineer 1",
+        "company": "Nexturn Pvt Ltd",
+        "experience_year": 2020
+      },
+      {
+        "name": "MOHAMMAD SHAHID",
+        "role": "Senior Data Engineer",
+        "company": "LTIMindtree",
+        "experience_year": 2018
+      },
+      {
+        "name": "Faiza Aftab",
+        "role": "Web Developer",
+        "company": "RevenueHero",
+        "experience_year": 2022
+      },
+      {
+        "name": "Zahid Rizwan",
+        "role": "Mobile App Developer",
+        "company": "WhatBytes",
+        "experience_year": 2025
+      },
+      {
+        "name": "Md Abid Raza",
+        "role": "Lab programmer",
+        "company": "Lord's institute",
+        "experience_year": 2022
+      },
+      {
+        "name": "Abdul Malik",
+        "role": "Java Backend Developer",
+        "company": "Infosys",
+        "experience_year": 2023
+      },
+      {
+        "name": "Mohd Nasir",
+        "role": "System Developer",
+        "company": "Data Resolve Technologies",
+        "experience_year": 2022
+      },
+      {
+        "name": "Dilshad Ashraf",
+        "role": "Full Stack Engineer",
+        "company": "CBA Services Pvt. Ltd",
+        "experience_year": 2026
+      },
+      {
+        "name": "Aftab Raza",
+        "role": "Cyber Security",
+        "company": "NIT Patna",
+        "experience_year": 2025
+      },
+      {
+        "name": "Mohd Waqar Hashim",
+        "role": "Software Developer",
+        "company": "TeraCloudX USA",
+        "experience_year": 2023
+      },
+      {
+        "name": "Md Dilshad",
+        "role": "Frontend Developer",
+        "company": "Infosys",
+        "experience_year": 2022
+      },
+      {
+        "name": "Ashad Jamal",
+        "role": "Programmer Analyst",
+        "company": "Cognizant",
+        "experience_year": 2025
+      },
+      {
+        "name": "Md Yazdan Rizwan",
+        "role": "Data Engineer",
+        "company": "Invesco Ltd.",
+        "experience_year": 2023
+      },
+      {
+        "name": "Syed Mohd Zeeshan Ali",
+        "role": "Android App Developer",
+        "company": "People Tech Group Inc.",
+        "experience_year": 2023
+      },
+      {
+        "name": "Hibbanur Rahman",
+        "role": "Full Stack Web Developer",
+        "company": "Mithila Stack",
+        "experience_year": 2025
+      },
+      {
+        "name": "Md Tauqueer Manzar",
+        "role": "Programmer Analyst Trainee",
+        "company": "Cognizant",
+        "experience_year": 2025
+      }
+    ],
+    "skills": [
+      {
+        "mentor": "Mohd Shahid",
+        "skills": [
+          "Python",
+          "Machine Learning"
+        ]
+      },
+      {
+        "mentor": "Md Tafsirul Haque Danish",
+        "skills": [
+          "Gen AI",
+          "React"
+        ]
+      },
+      {
+        "mentor": "Md Seraj Ahmad",
+        "skills": [
+          "Core JAVA",
+          "DSA"
+        ]
+      },
+      {
+        "mentor": "Rehan Ansari",
+        "skills": [
+          "VueJS",
+          "Frappe"
+        ]
+      },
+      {
+        "mentor": "Asad Ahmad",
+        "skills": [
+          "Dynamics 365",
+          "Azure"
+        ]
+      },
+      {
+        "mentor": "Md Anash Ansari",
+        "skills": [
+          "Java",
+          "Microservices"
+        ]
+      },
+      {
+        "mentor": "MOHAMMAD KHALID ANSARI",
+        "skills": [
+          "Cloud",
+          "Devops"
+        ]
+      },
+      {
+        "mentor": "MOHAMMAD SHAHID",
+        "skills": [
+          "Spark",
+          "GCP"
+        ]
+      },
+      {
+        "mentor": "Faiza Aftab",
+        "skills": [
+          "Web Tech",
+          "ReactJS"
+        ]
+      },
+      {
+        "mentor": "Zahid Rizwan",
+        "skills": [
+          "Dart",
+          "Flutter"
+        ]
+      },
+      {
+        "mentor": "Md Abid Raza",
+        "skills": [
+          "React JS",
+          "JavaScript"
+        ]
+      },
+      {
+        "mentor": "Abdul Malik",
+        "skills": [
+          "Spring Boot",
+          "SQL"
+        ]
+      },
+      {
+        "mentor": "Mohd Nasir",
+        "skills": [
+          "SQL",
+          "Data Science"
+        ]
+      },
+      {
+        "mentor": "Dilshad Ashraf",
+        "skills": [
+          ".NET",
+          "Microservices"
+        ]
+      },
+      {
+        "mentor": "Aftab Raza",
+        "skills": [
+          "Ethical Hacker",
+          "Software Developer"
+        ]
+      },
+      {
+        "mentor": "Mohd Waqar Hashim",
+        "skills": [
+          ".Net",
+          "API Dev"
+        ]
+      },
+      {
+        "mentor": "Md Dilshad",
+        "skills": [
+          "Next Js",
+          "Typescript"
+        ]
+      },
+      {
+        "mentor": "Ashad Jamal",
+        "skills": [
+          "C#",
+          "Angular"
+        ]
+      },
+      {
+        "mentor": "Md Yazdan Rizwan",
+        "skills": [
+          "AWS",
+          "Data Science"
+        ]
+      },
+      {
+        "mentor": "Syed Mohd Zeeshan Ali",
+        "skills": [
+          "Kotlin",
+          "Android Jetpack"
+        ]
+      },
+      {
+        "mentor": "Hibbanur Rahman",
+        "skills": [
+          "React Native",
+          "NodeJs"
+        ]
+      },
+      {
+        "mentor": "Md Tauqueer Manzar",
+        "skills": [
+          "Java",
+          "nextjs"
+        ]
+      }
+    ],
+    "companies": [
+      "Nabeh",
+      "Oracle",
+      "Bharat Electronic Limited.",
+      "Clover Infotech Pvt Ltd",
+      "Accenture",
+      "IntraEdge",
+      "Nexturn Pvt Ltd",
+      "LTIMindtree",
+      "RevenueHero",
+      "WhatBytes",
+      "Lord's institute",
+      "Infosys",
+      "Data Resolve Technologies",
+      "CBA Services Pvt. Ltd",
+      "NIT Patna",
+      "TeraCloudX USA",
+      "Cognizant",
+      "Invesco Ltd.",
+      "People Tech Group Inc.",
+      "Mithila Stack"
+    ],
+    "linkedin_profiles": [
+      {
+        "name": "Mohd Shahid",
+        "linkedin": "https://www.linkedin.com/in/msaligs/"
+      },
+      {
+        "name": "Md Tafsirul Haque Danish",
+        "linkedin": "https://www.linkedin.com/in/mthdanish/"
+      },
+      {
+        "name": "Md Seraj Ahmad",
+        "linkedin": "https://www.linkedin.com/in/md-seraj-ahmad-7142ab217/"
+      },
+      {
+        "name": "Rehan Ansari",
+        "linkedin": "https://www.linkedin.com/in/rehan-ansari-089a5212b"
+      },
+      {
+        "name": "Asad Ahmad",
+        "linkedin": "https://www.linkedin.com/in/asad-ahmad-2454a3196/"
+      },
+      {
+        "name": "Md Anash Ansari",
+        "linkedin": "https://www.linkedin.com/in/ansarianashnp/"
+      },
+      {
+        "name": "MOHAMMAD KHALID ANSARI",
+        "linkedin": "https://www.linkedin.com/in/mohammad-khalid-ansari-64015924a"
+      },
+      {
+        "name": "MOHAMMAD SHAHID",
+        "linkedin": "https://www.linkedin.com/in/mohammad-shahid-4480b7140/"
+      },
+      {
+        "name": "Faiza Aftab",
+        "linkedin": "https://www.linkedin.com/in/faiza-aftab-98b03a212"
+      },
+      {
+        "name": "Zahid Rizwan",
+        "linkedin": "https://www.linkedin.com/in/zahid-rizwan"
+      },
+      {
+        "name": "Md Abid Raza",
+        "linkedin": "https://www.linkedin.com/in/mdabidraza"
+      },
+      {
+        "name": "Abdul Malik",
+        "linkedin": "https://www.linkedin.com/in/abdul-malik29"
+      },
+      {
+        "name": "Mohd Nasir",
+        "linkedin": "https://www.linkedin.com/in/mohd-nasir-251a6b194"
+      },
+      {
+        "name": "Dilshad Ashraf",
+        "linkedin": "https://www.linkedin.com/in/dilshad-ashraf-195b20a8"
+      },
+      {
+        "name": "Aftab Raza",
+        "linkedin": "https://www.linkedin.com/in/aftabinhustle"
+      },
+      {
+        "name": "Mohd Waqar Hashim",
+        "linkedin": "https://www.linkedin.com/in/mohd-waqar-hashim-2705b41aa/"
+      },
+      {
+        "name": "Md Dilshad",
+        "linkedin": "https://www.linkedin.com/in/frontend-dev-shad/"
+      },
+      {
+        "name": "Ashad Jamal",
+        "linkedin": "https://www.linkedin.com/in/ashad-jamal/"
+      },
+      {
+        "name": "Md Yazdan Rizwan",
+        "linkedin": "https://www.linkedin.com/in/md-yazdan-rizwan-2966b91a7/"
+      },
+      {
+        "name": "Syed Mohd Zeeshan Ali",
+        "linkedin": "https://www.linkedin.com/in/syed-mohd-zeeshan-ali-154b81217"
+      },
+      {
+        "name": "Hibbanur Rahman",
+        "linkedin": "https://www.linkedin.com/in/hibbanur-rahman/"
+      },
+      {
+        "name": "Md Tauqueer Manzar",
+        "linkedin": "https://www.linkedin.com/in/md-tauqueer-manzar-268408233/"
+      }
+    ]
+  }
+}
