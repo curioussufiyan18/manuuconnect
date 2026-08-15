@@ -52,13 +52,13 @@ Your purpose is to help with:
 - Activities
 - Opportunities
 - Website information
-- Student learning and career roadmaps when relevant to your mentor role
+- Student learning and career roadmaps when relevant to the MANUUConnect mentor role
 
 Rules:
 1. MANUUConnect is not the official MANUU university chatbot.
-2. Use the provided MANUUConnect knowledge as the main source.
+2. Use the provided MANUUConnect knowledge as the primary source.
 3. Never invent MANUUConnect information.
-4. If the information is not available in the provided knowledge, say:
+4. If the provided knowledge does not contain the answer, say:
    "I don't have that information yet."
 5. Do not use unrelated general knowledge to fill missing MANUUConnect facts.
 6. Reject unrelated requests such as app building, large coding tasks,
@@ -121,38 +121,74 @@ function getKeywords(text) {
     );
 }
 
+/*
+  Keep objects inside arrays together.
+
+  Example:
+  core_team: [
+    {
+      name: "...",
+      position: "...",
+      skills: [...]
+    }
+  ]
+
+  becomes one complete knowledge record.
+*/
 function flattenKnowledge(value, path = "", results = []) {
   if (Array.isArray(value)) {
     value.forEach((item, index) => {
-      flattenKnowledge(
-        item,
-        `${path}[${index}]`,
-        results
-      );
+      const itemPath = `${path}[${index}]`;
+
+      if (
+        item &&
+        typeof item === "object" &&
+        !Array.isArray(item)
+      ) {
+        results.push({
+          path: itemPath,
+          content: item,
+        });
+      } else {
+        flattenKnowledge(
+          item,
+          itemPath,
+          results
+        );
+      }
     });
 
     return results;
   }
 
   if (value && typeof value === "object") {
-    const keys = Object.keys(value);
+    for (const [key, child] of Object.entries(value)) {
+      const childPath = path
+        ? `${path}.${key}`
+        : key;
 
-    if (
-      typeof value.question === "string" ||
-      typeof value.answer === "string"
-    ) {
-      results.push({
-        path,
-        content: value,
-      });
+      /*
+        Preserve FAQ question/answer objects
+        as a single record.
+      */
+      if (
+        child &&
+        typeof child === "object" &&
+        !Array.isArray(child) &&
+        (typeof child.question === "string" ||
+          typeof child.answer === "string")
+      ) {
+        results.push({
+          path: childPath,
+          content: child,
+        });
 
-      return results;
-    }
+        continue;
+      }
 
-    for (const key of keys) {
       flattenKnowledge(
-        value[key],
-        path ? `${path}.${key}` : key,
+        child,
+        childPath,
         results
       );
     }
@@ -181,8 +217,17 @@ function buildKnowledgeIndex() {
         source: file.name,
         path: record.path,
         content: record.content,
+
+        /*
+          Include source/path too.
+          This helps questions such as:
+          "core team members"
+          match the correct records.
+        */
         text: normalize(
-          JSON.stringify(record.content)
+          `${file.name} ${record.path} ${JSON.stringify(
+            record.content
+          )}`
         ),
       });
     }
@@ -214,15 +259,19 @@ function scoreRecord(
   }
 
   if (record.source === "Core Team") {
-    score += 1;
+    score += 2;
   }
 
   if (record.source === "Events") {
-    score += 1;
+    score += 2;
   }
 
   if (record.source === "FAQ") {
-    score += 1;
+    score += 2;
+  }
+
+  if (record.source === "Mentors") {
+    score += 2;
   }
 
   return score;
@@ -243,7 +292,7 @@ function retrieveKnowledge(query) {
     }))
     .filter((record) => record.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 4);
+    .slice(0, 5);
 }
 
 export default async function handler(req) {
