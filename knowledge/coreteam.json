@@ -1,0 +1,110 @@
+```json
+{
+  "core_team": [
+    {
+      "name": "Huzefa Bin Juned",
+      "position": "Lead Developer",
+      "program": "MCA",
+      "year": "2nd Year",
+      "skills": [
+        "React Js",
+        "Next Js",
+        "AWS"
+      ],
+      "additional_skills_count": 4
+    },
+    {
+      "name": "Imran Hussain",
+      "position": "Community Manager",
+      "program": "MCA",
+      "year": "2nd Year",
+      "skills": [
+        "ReactJs",
+        "NodeJs",
+        "Tailwind CSS"
+      ],
+      "additional_skills_count": 2
+    },
+    {
+      "name": "Merajul Haque",
+      "position": "Backend Developer",
+      "program": "M.Tech",
+      "year": "2nd Year",
+      "skills": [
+        "ReactJS",
+        "Next JS",
+        "Tailwind CSS"
+      ],
+      "additional_skills_count": 2
+    },
+    {
+      "name": "Alisha Sadiq",
+      "position": "Lead Designer",
+      "program": "MCA",
+      "year": "2nd Year",
+      "skills": [
+        "HTML",
+        "CSS",
+        "C"
+      ]
+    },
+    {
+      "name": "Bushra Jabin",
+      "position": "Frontend Developer",
+      "program": "B.Tech",
+      "year": "3rd Year",
+      "skills": [
+        "React JS",
+        "Next JS",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "name": "Md Rayan",
+      "position": "Lead Social Media",
+      "program": "B.Tech",
+      "year": "4th Year",
+      "skills": [
+        "Data Science",
+        "Python",
+        "GitHub"
+      ],
+      "additional_skills_count": 2
+    },
+    {
+      "name": "Mobashshir Rahman",
+      "position": "Student Coordinator",
+      "program": "B.Tech",
+      "year": "2nd Year",
+      "skills": [
+        "HTML",
+        "CSS",
+        "C"
+      ],
+      "additional_skills_count": 1
+    },
+    {
+      "name": "Shahid Hussain",
+      "position": "Tech & AI Team",
+      "program": "B.Tech",
+      "year": "2nd Year",
+      "skills": [
+        "HTML",
+        "CSS",
+        "React"
+      ],
+      "additional_skills_count": 1
+    },
+    {
+      "name": "MD MERAZ",
+      "position": "Design & Video Team",
+      "program": "B.Tech",
+      "year": "2nd Year",
+      "skills": [
+        "html",
+        "css"
+      ]
+    }
+  ]
+}
+```
