@@ -1,67 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Chatbot</title>
-    <style>
-        body { font-family: sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; margin-top: 50px; }
-        #chat-container { width: 400px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        #chat-box { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 4px; }
-        .message { margin-bottom: 10px; padding: 8px; border-radius: 4px; }
-        .user { background: #007bff; color: white; text-align: right; }
-        .bot { background: #e9ecef; color: black; text-align: left; }
-        input { width: 75%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { width: 20%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MANUUConnect - AI Assistant</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f5f7;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 700px;
+      height: 90vh;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #075e54;
+      color: white;
+      padding: 20px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+    }
+
+    .header p {
+      margin-top: 5px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    #messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+    }
+
+    .user {
+      justify-content: flex-end;
+    }
+
+    .bot {
+      justify-content: flex-start;
+    }
+
+    .bubble {
+      max-width: 80%;
+      padding: 12px 15px;
+      border-radius: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .user .bubble {
+      background: #dcf8c6;
+      color: #111;
+    }
+
+    .bot .bubble {
+      background: #eeeeee;
+      color: #111;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 15px;
+      border-top: 1px solid #ddd;
+      gap: 10px;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    #sendButton {
+      border: none;
+      background: #075e54;
+      color: white;
+      padding: 0 22px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    #sendButton:hover {
+      background: #064c44;
+    }
+
+    #sendButton:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .typing {
+      color: #777;
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .chat-container {
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="chat-container">
-    <h3 style="text-align: center;">Community Assistant</h3>
-    <div id="chat-box"></div>
-    <div style="display: flex; justify-content: space-between;">
-        <input type="text" id="user-input" placeholder="Ask something...">
-        <button onclick="sendMessage()">Send</button>
+  <div class="chat-container">
+
+    <div class="header">
+      <h1>MANUUConnect</h1>
+      <p>AI Assistant for Maulana Azad National Urdu University</p>
     </div>
-</div>
 
-<script>
-    async function sendMessage() {
-        const inputField = document.getElementById("user-input");
-        const chatBox = document.getElementById("chat-box");
-        const message = inputField.value.trim();
-        
-        if (!message) return;
+    <div id="messages">
 
-        // Display the user's message
-        chatBox.innerHTML += `<div class="message user">${message}</div>`;
-        inputField.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
+      <div class="message bot">
+        <div class="bubble">
+          Hello! 👋 I'm MANUUConnect.
 
-        try {
-            // Send the message to our Vercel serverless function
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message })
-            });
-            
-            const data = await response.json();
-            
-            // Display the bot's response
-            if (data.reply) {
-                chatBox.innerHTML += `<div class="message bot">${data.reply}</div>`;
-            } else {
-                chatBox.innerHTML += `<div class="message bot">Error: Could not get a response.</div>`;
-            }
-        } catch (error) {
-            chatBox.innerHTML += `<div class="message bot">Connection error. Please try again.</div>`;
-        }
-        
-        chatBox.scrollTop = chatBox.scrollHeight;
+          How can I help you with MANUU today?
+        </div>
+      </div>
+
+    </div>
+
+    <div class="input-area">
+
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="Ask something about MANUU..."
+        autocomplete="off"
+      >
+
+      <button id="sendButton">
+        Send
+      </button>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const messageInput = document.getElementById("messageInput");
+    const sendButton = document.getElementById("sendButton");
+    const messages = document.getElementById("messages");
+
+    function addMessage(text, sender) {
+
+      const message = document.createElement("div");
+      message.className = `message ${sender}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      bubble.textContent = text;
+
+      message.appendChild(bubble);
+      messages.appendChild(message);
+
+      messages.scrollTop = messages.scrollHeight;
     }
-</script>
 
+    async function sendMessage() {
+
+      const message = messageInput.value.trim();
+
+      if (!message) {
+        return;
+      }
+
+      addMessage(message, "user");
+
+      messageInput.value = "";
+
+      sendButton.disabled = true;
+      sendButton.textContent = "Thinking...";
+
+      const typing = document.createElement("div");
+      typing.className = "typing";
+      typing.textContent = "MANUUConnect is thinking...";
+      typing.id = "typing";
+
+      messages.appendChild(typing);
+
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+
+        const response = await fetch("/api/chat", {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            message: message
+          })
+
+        });
+
+        const data = await response.json();
+
+        document.getElementById("typing")?.remove();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Something went wrong.");
+        }
+
+        addMessage(data.reply, "bot");
+
+      } catch (error) {
+
+        document.getElementById("typing")?.remove();
+
+        addMessage(
+          "Sorry, I couldn't connect to the AI right now. Please try again.",
+          "bot"
+        );
+
+        console.error(error);
+
+      } finally {
+
+        sendButton.disabled = false;
+        sendButton.textContent = "Send";
+
+        messageInput.focus();
+
+      }
+    }
+
+    sendButton.addEventListener("click", sendMessage);
+
+    messageInput.addEventListener("keydown", function(event) {
+
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>
 </body>
 </html>
