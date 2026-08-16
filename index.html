@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MANUUConnect AI</title>
 
   <style>
@@ -13,129 +12,425 @@
       padding: 0;
     }
 
+    :root {
+      --blue: #3b82f6;
+      --blue-dark: #2563eb;
+      --bg: #f7f9fc;
+      --panel: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --soft: #f3f6fb;
+      --bot: #ffffff;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f3f5f7;
-      height: 100vh;
+      min-height: 100vh;
+      background: var(--bg);
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+      color: var(--text);
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    .chat-container {
+    .app {
       width: 100%;
-      max-width: 700px;
-      height: 90vh;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+      max-width: 980px;
+      height: 94vh;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
     }
 
-    .header {
-      background: #075e54;
+    /* HEADER */
+
+    .topbar {
+      height: 64px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .brand-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--blue);
       color: white;
-      padding: 20px;
-    }
-
-    .header h1 {
-      font-size: 22px;
-    }
-
-    .header p {
-      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 14px;
-      opacity: 0.9;
+      font-weight: 700;
     }
+
+    .brand-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .brand-sub {
+      margin-top: 1px;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .header-btn {
+      width: 27px;
+      height: 27px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 8px;
+      color: #374151;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .header-btn:hover {
+      background: #f8fafc;
+    }
+
+    /* CHAT */
 
     #messages {
       flex: 1;
-      padding: 20px;
       overflow-y: auto;
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(59, 130, 246, 0.06),
+          transparent 30%
+        ),
+        #f8fafc;
+      padding: 26px 16px 18px;
     }
+
+    #messages::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    #messages::-webkit-scrollbar-thumb {
+      background: #d9dee7;
+      border-radius: 20px;
+    }
+
+    /* WELCOME */
+
+    .welcome {
+      max-width: 640px;
+      margin: 18px auto 28px;
+    }
+
+    .welcome-row {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+    }
+
+    .welcome-icon {
+      width: 35px;
+      height: 35px;
+      flex-shrink: 0;
+      border: 1px solid #cfe0ff;
+      border-radius: 10px;
+      background: #eef5ff;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .welcome h1 {
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .welcome p {
+      max-width: 540px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    /* QUICK ACTIONS */
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 12px 0 0 46px;
+    }
+
+    .quick-btn {
+      border: 1px solid #dfe3ea;
+      background: #fff;
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: #374151;
+      font-size: 9px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .quick-btn:hover {
+      border-color: #b9d1ff;
+      background: #eef5ff;
+      color: var(--blue-dark);
+    }
+
+    /* MESSAGES */
 
     .message {
-      margin-bottom: 15px;
       display: flex;
+      margin-bottom: 12px;
+      animation: fadeIn 0.18s ease;
     }
 
-    .user {
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
       justify-content: flex-end;
     }
 
-    .bot {
+    .message.bot {
       justify-content: flex-start;
     }
 
+    .message-inner {
+      max-width: 72%;
+    }
+
     .bubble {
-      max-width: 80%;
-      padding: 12px 15px;
-      border-radius: 14px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      font-size: 10px;
       line-height: 1.5;
       white-space: pre-wrap;
     }
 
     .user .bubble {
-      background: #dcf8c6;
-      color: #111;
+      background: var(--blue);
+      color: white;
+      border-bottom-right-radius: 4px;
     }
 
     .bot .bubble {
-      background: #eeeeee;
-      color: #111;
+      background: var(--bot);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
     }
 
-    .input-area {
+    .time {
+      margin-top: 3px;
+      padding: 0 3px;
+      color: #9ca3af;
+      font-size: 8px;
+    }
+
+    .user .time {
+      text-align: right;
+    }
+
+    /* THINKING */
+
+    .thinking-message {
       display: flex;
-      padding: 15px;
-      border-top: 1px solid #ddd;
-      gap: 10px;
+      justify-content: flex-start;
+      margin-bottom: 12px;
     }
 
-    #messageInput {
+    .thinking-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .thinking-bubble {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      border-bottom-left-radius: 4px;
+      padding: 9px 11px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .thinking-dots {
+      display: inline-flex;
+      gap: 3px;
+      margin-left: 3px;
+    }
+
+    .thinking-dots span {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #9ca3af;
+      animation: blink 1s infinite;
+    }
+
+    .thinking-dots span:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .thinking-dots span:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes blink {
+      0%, 60%, 100% {
+        opacity: 0.25;
+      }
+
+      30% {
+        opacity: 1;
+      }
+    }
+
+    /* COMPOSER */
+
+    .composer-area {
+      padding: 10px 14px 13px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+    }
+
+    .composer {
+      max-width: 760px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 6px 5px 11px;
+      border: 1px solid #dfe3ea;
+      background: white;
+      border-radius: 13px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+    }
+
+    .input {
       flex: 1;
-      padding: 13px;
-      border: 1px solid #ccc;
-      border-radius: 25px;
-      outline: none;
-      font-size: 15px;
-    }
-
-    #sendButton {
+      min-width: 0;
       border: none;
-      background: #075e54;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 10px;
+      padding: 9px 0;
+    }
+
+    .input::placeholder {
+      color: #9ca3af;
+    }
+
+    .send-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 10px;
+      background: var(--blue);
       color: white;
-      padding: 0 22px;
-      border-radius: 25px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.15s;
     }
 
-    #sendButton:hover {
-      background: #064c44;
+    .send-btn:hover {
+      background: var(--blue-dark);
     }
 
-    #sendButton:disabled {
-      background: #999;
+    .send-btn:disabled {
+      background: #b8c0cc;
       cursor: not-allowed;
     }
 
-    .typing {
-      color: #777;
-      font-style: italic;
-      margin-bottom: 15px;
+    .footer {
+      text-align: center;
+      margin-top: 6px;
+      color: #9ca3af;
+      font-size: 8px;
     }
 
-    @media (max-width: 600px) {
-      .chat-container {
-        height: 100vh;
-        border-radius: 0;
+    /* MOBILE */
+
+    @media (max-width: 700px) {
+      body {
+        background: white;
       }
 
-      .bubble {
-        max-width: 88%;
+      .app {
+        width: 100%;
+        height: 100vh;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .topbar {
+        height: 58px;
+        padding: 0 12px;
+      }
+
+      #messages {
+        padding: 18px 10px 12px;
+      }
+
+      .welcome {
+        margin-top: 35px;
+      }
+
+      .welcome h1 {
+        font-size: 16px;
+      }
+
+      .message-inner {
+        max-width: 84%;
+      }
+
+      .composer-area {
+        padding: 8px 9px 11px;
       }
     }
   </style>
@@ -143,159 +438,501 @@
 
 <body>
 
-  <div class="chat-container">
+  <div class="app">
 
-    <div class="header">
-      <h1>MANUUConnect</h1>
-      <p>AI Assistant for the MANUUConnect community</p>
-    </div>
+    <header class="topbar">
 
-    <div id="messages">
+      <div class="brand">
 
-      <div class="message bot">
-        <div class="bubble">Hello! 👋 I'm MANUUConnect.
+        <div class="brand-icon">
+          M
+        </div>
 
-How can I help you today?</div>
+        <div>
+          <div class="brand-name">
+            MANUUConnect AI
+          </div>
+
+          <div class="brand-sub">
+            Community knowledge + student mentor
+          </div>
+        </div>
+
       </div>
 
-    </div>
+      <div class="header-actions">
 
-    <div class="input-area">
+        <button
+          class="header-btn"
+          id="newChatButton"
+          title="New chat"
+        >
+          +
+        </button>
 
-      <input
-        type="text"
-        id="messageInput"
-        placeholder="Ask something about MANUUConnect..."
-        autocomplete="off"
-        maxlength="1000"
+        <button
+          class="header-btn"
+          title="More"
+        >
+          ...
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <main id="messages">
+
+      <div
+        class="welcome"
+        id="welcome"
       >
 
-      <button id="sendButton">
-        Send
-      </button>
+        <div class="welcome-row">
+
+          <div class="welcome-icon">
+            ✦
+          </div>
+
+          <div>
+
+            <h1>
+              Welcome to MANUUConnect AI
+            </h1>
+
+            <p>
+              Ask about the community, team, projects,
+              events, mentors, opportunities, or get
+              a personalized learning roadmap.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+          <button
+            class="quick-btn"
+            data-question="What is MANUUConnect?"
+          >
+            About MANUUConnect
+          </button>
+
+          <button
+            class="quick-btn"
+            data-question="What is the latest event?"
+          >
+            Latest Event
+          </button>
+
+          <button
+            class="quick-btn"
+            data-question="Who are the mentors?"
+          >
+            Mentors
+          </button>
+
+          <button
+            class="quick-btn"
+            data-question="What opportunities are available?"
+          >
+            Opportunities
+          </button>
+
+        </div>
+
+      </div>
+
+    </main>
+
+
+    <div class="composer-area">
+
+      <div class="composer">
+
+        <input
+          type="text"
+          id="messageInput"
+          class="input"
+          placeholder="Ask anything about MANUUConnect..."
+          autocomplete="off"
+          maxlength="1000"
+        />
+
+        <button
+          id="sendButton"
+          class="send-btn"
+          aria-label="Send"
+        >
+          ↑
+        </button>
+
+      </div>
+
+      <div class="footer">
+        MANUUConnect AI • Short answers • Community focused
+      </div>
 
     </div>
 
   </div>
 
+
   <script>
-    const messageInput = document.getElementById("messageInput");
-    const sendButton = document.getElementById("sendButton");
-    const messages = document.getElementById("messages");
 
     const API_URL =
       "https://manuuconnectai.pvtsufiyan18.workers.dev/";
 
+    const messages =
+      document.getElementById("messages");
+
+    const input =
+      document.getElementById("messageInput");
+
+    const sendButton =
+      document.getElementById("sendButton");
+
+    const newChatButton =
+      document.getElementById("newChatButton");
+
+    const welcome =
+      document.getElementById("welcome");
+
+
+    function getTime() {
+
+      return new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+    }
+
+
     function addMessage(text, sender) {
-      const message = document.createElement("div");
-      message.className = `message ${sender}`;
 
-      const bubble = document.createElement("div");
-      bubble.className = "bubble";
-      bubble.textContent = text;
+      document
+        .getElementById("welcome")
+        ?.remove();
 
-      message.appendChild(bubble);
+      const message =
+        document.createElement("div");
+
+      message.className =
+        `message ${sender}`;
+
+
+      const inner =
+        document.createElement("div");
+
+      inner.className =
+        "message-inner";
+
+
+      const bubble =
+        document.createElement("div");
+
+      bubble.className =
+        "bubble";
+
+      bubble.textContent =
+        text;
+
+
+      const time =
+        document.createElement("div");
+
+      time.className =
+        "time";
+
+      time.textContent =
+        getTime();
+
+
+      inner.appendChild(bubble);
+
+      inner.appendChild(time);
+
+      message.appendChild(inner);
+
       messages.appendChild(message);
 
-      messages.scrollTop = messages.scrollHeight;
+
+      messages.scrollTop =
+        messages.scrollHeight;
+
     }
 
-    function addTyping() {
-      const typing = document.createElement("div");
 
-      typing.className = "typing";
-      typing.textContent = "MANUUConnect is thinking...";
-      typing.id = "typing";
+    function showThinking() {
 
-      messages.appendChild(typing);
-      messages.scrollTop = messages.scrollHeight;
+      const wrapper =
+        document.createElement("div");
+
+      wrapper.className =
+        "thinking-message";
+
+      wrapper.id =
+        "thinking";
+
+
+      wrapper.innerHTML = `
+        <div class="thinking-wrap">
+          <div class="thinking-bubble">
+            MANUUConnect is thinking
+            <span class="thinking-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+        </div>
+      `;
+
+
+      messages.appendChild(wrapper);
+
+      messages.scrollTop =
+        messages.scrollHeight;
+
     }
 
-    function removeTyping() {
-      document.getElementById("typing")?.remove();
+
+    function removeThinking() {
+
+      document
+        .getElementById("thinking")
+        ?.remove();
+
     }
+
 
     async function sendMessage() {
-      const message = messageInput.value.trim();
+
+      const message =
+        input.value.trim();
+
 
       if (!message) {
         return;
       }
 
-      addMessage(message, "user");
 
-      messageInput.value = "";
-      sendButton.disabled = true;
-      sendButton.textContent = "Thinking...";
+      addMessage(
+        message,
+        "user"
+      );
 
-      addTyping();
+
+      input.value =
+        "";
+
+
+      sendButton.disabled =
+        true;
+
+
+      showThinking();
+
 
       try {
-        const response = await fetch(API_URL, {
-          method: "POST",
 
-          headers: {
-            "Content-Type": "application/json"
-          },
+        const response =
+          await fetch(
+            API_URL,
+            {
+              method: "POST",
 
-          body: JSON.stringify({
-            message: message
-          })
-        });
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
 
-        let data;
+              body: JSON.stringify({
+                message
+              })
+            }
+          );
 
-        try {
-          data = await response.json();
-        } catch {
-          throw new Error("Invalid response from the server.");
-        }
 
-        removeTyping();
+        const data =
+          await response.json();
+
+
+        removeThinking();
+
 
         if (!response.ok) {
+
           throw new Error(
             data.error ||
             data.reply ||
             "Something went wrong."
           );
+
         }
 
-        const reply =
-          data.reply ||
-          data.response ||
-          "I don't have that information yet.";
-
-        addMessage(reply, "bot");
-
-      } catch (error) {
-        removeTyping();
-
-        console.error("Chat error:", error);
 
         addMessage(
-          error.message ||
-          "Sorry, I couldn't connect to MANUUConnect AI right now.",
+          data.reply ||
+          "I don't have that information yet.",
           "bot"
         );
 
+
+      } catch (error) {
+
+        removeThinking();
+
+
+        addMessage(
+          "Sorry, I couldn't connect to MANUUConnect AI. Please try again.",
+          "bot"
+        );
+
+
+        console.error(
+          "MANUUConnect AI error:",
+          error
+        );
+
       } finally {
-        sendButton.disabled = false;
-        sendButton.textContent = "Send";
-        messageInput.focus();
+
+        sendButton.disabled =
+          false;
+
+        input.focus();
+
       }
+
     }
 
-    sendButton.addEventListener("click", sendMessage);
 
-    messageInput.addEventListener("keydown", function(event) {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
+    document
+      .querySelectorAll(".quick-btn")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            input.value =
+              button.dataset.question;
+
+            sendMessage();
+
+          }
+        );
+
+      });
+
+
+    sendButton.addEventListener(
+      "click",
+      sendMessage
+    );
+
+
+    input.addEventListener(
+      "keydown",
+      event => {
+
+        if (event.key === "Enter") {
+
+          event.preventDefault();
+
+          sendMessage();
+
+        }
+
       }
-    });
+    );
 
-    messageInput.focus();
+
+    newChatButton.addEventListener(
+      "click",
+      () => {
+
+        messages.innerHTML = `
+          <div class="welcome" id="welcome">
+            <div class="welcome-row">
+              <div class="welcome-icon">✦</div>
+              <div>
+                <h1>Welcome to MANUUConnect AI</h1>
+                <p>
+                  Ask about the community, team,
+                  projects, events, mentors,
+                  opportunities, or get a
+                  personalized learning roadmap.
+                </p>
+              </div>
+            </div>
+
+            <div class="quick-actions">
+
+              <button
+                class="quick-btn"
+                data-question="What is MANUUConnect?"
+              >
+                About MANUUConnect
+              </button>
+
+              <button
+                class="quick-btn"
+                data-question="What is the latest event?"
+              >
+                Latest Event
+              </button>
+
+              <button
+                class="quick-btn"
+                data-question="Who are the mentors?"
+              >
+                Mentors
+              </button>
+
+              <button
+                class="quick-btn"
+                data-question="What opportunities are available?"
+              >
+                Opportunities
+              </button>
+
+            </div>
+          </div>
+        `;
+
+
+        document
+          .querySelectorAll(".quick-btn")
+          .forEach(button => {
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                input.value =
+                  button.dataset.question;
+
+                sendMessage();
+
+              }
+            );
+
+          });
+
+
+        input.focus();
+
+      }
+    );
+
+
+    input.focus();
+
   </script>
 
 </body>
