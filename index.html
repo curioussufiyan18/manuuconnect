@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>MANUUConnect - AI Assistant</title>
+  <title>MANUUConnect AI</title>
 
   <style>
     * {
@@ -133,6 +133,10 @@
         height: 100vh;
         border-radius: 0;
       }
+
+      .bubble {
+        max-width: 88%;
+      }
     }
   </style>
 </head>
@@ -143,17 +147,15 @@
 
     <div class="header">
       <h1>MANUUConnect</h1>
-      <p>AI Assistant for Maulana Azad National Urdu University</p>
+      <p>AI Assistant for the MANUUConnect community</p>
     </div>
 
     <div id="messages">
 
       <div class="message bot">
-        <div class="bubble">
-          Hello! 👋 I'm MANUUConnect.
+        <div class="bubble">Hello! 👋 I'm MANUUConnect.
 
-          How can I help you with MANUU today?
-        </div>
+How can I help you today?</div>
       </div>
 
     </div>
@@ -163,8 +165,9 @@
       <input
         type="text"
         id="messageInput"
-        placeholder="Ask something about MANUU..."
+        placeholder="Ask something about MANUUConnect..."
         autocomplete="off"
+        maxlength="1000"
       >
 
       <button id="sendButton">
@@ -176,19 +179,19 @@
   </div>
 
   <script>
-
     const messageInput = document.getElementById("messageInput");
     const sendButton = document.getElementById("sendButton");
     const messages = document.getElementById("messages");
 
-    function addMessage(text, sender) {
+    const API_URL =
+      "https://manuuconnectai.pvtsufiyan18.workers.dev/";
 
+    function addMessage(text, sender) {
       const message = document.createElement("div");
       message.className = `message ${sender}`;
 
       const bubble = document.createElement("div");
       bubble.className = "bubble";
-
       bubble.textContent = text;
 
       message.appendChild(bubble);
@@ -197,8 +200,22 @@
       messages.scrollTop = messages.scrollHeight;
     }
 
-    async function sendMessage() {
+    function addTyping() {
+      const typing = document.createElement("div");
 
+      typing.className = "typing";
+      typing.textContent = "MANUUConnect is thinking...";
+      typing.id = "typing";
+
+      messages.appendChild(typing);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function removeTyping() {
+      document.getElementById("typing")?.remove();
+    }
+
+    async function sendMessage() {
       const message = messageInput.value.trim();
 
       if (!message) {
@@ -208,23 +225,13 @@
       addMessage(message, "user");
 
       messageInput.value = "";
-
       sendButton.disabled = true;
       sendButton.textContent = "Thinking...";
 
-      const typing = document.createElement("div");
-      typing.className = "typing";
-      typing.textContent = "MANUUConnect is thinking...";
-      typing.id = "typing";
-
-      messages.appendChild(typing);
-
-      messages.scrollTop = messages.scrollHeight;
+      addTyping();
 
       try {
-
-        const response = await fetch("/api/chat", {
-
+        const response = await fetch(API_URL, {
           method: "POST",
 
           headers: {
@@ -234,53 +241,62 @@
           body: JSON.stringify({
             message: message
           })
-
         });
 
-        const data = await response.json();
+        let data;
 
-        document.getElementById("typing")?.remove();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Something went wrong.");
+        try {
+          data = await response.json();
+        } catch {
+          throw new Error("Invalid response from the server.");
         }
 
-        addMessage(data.reply, "bot");
+        removeTyping();
+
+        if (!response.ok) {
+          throw new Error(
+            data.error ||
+            data.reply ||
+            "Something went wrong."
+          );
+        }
+
+        const reply =
+          data.reply ||
+          data.response ||
+          "I don't have that information yet.";
+
+        addMessage(reply, "bot");
 
       } catch (error) {
+        removeTyping();
 
-        document.getElementById("typing")?.remove();
+        console.error("Chat error:", error);
 
         addMessage(
-          "Sorry, I couldn't connect to the AI right now. Please try again.",
+          error.message ||
+          "Sorry, I couldn't connect to MANUUConnect AI right now.",
           "bot"
         );
 
-        console.error(error);
-
       } finally {
-
         sendButton.disabled = false;
         sendButton.textContent = "Send";
-
         messageInput.focus();
-
       }
     }
 
     sendButton.addEventListener("click", sendMessage);
 
     messageInput.addEventListener("keydown", function(event) {
-
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
         sendMessage();
       }
-
     });
 
+    messageInput.focus();
   </script>
 
-</body>
-</html>
 </body>
 </html>
