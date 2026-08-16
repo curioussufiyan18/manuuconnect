@@ -1,10 +1,10 @@
-import about from "./knowledge/about.json" with { type: "json" };
-import coreteam from "./knowledge/coreteam.json" with { type: "json" };
-import events from "./knowledge/events.json" with { type: "json" };
-import projects from "./knowledge/projects.json" with { type: "json" };
-import achievements from "./knowledge/achievements.json" with { type: "json" };
-import mentors from "./knowledge/mentors.json" with { type: "json" };
-import faq from "./knowledge/faq.json" with { type: "json" };
+import about from "./knowledge/about.json";
+import coreteam from "./knowledge/coreteam.json";
+import events from "./knowledge/events.json";
+import projects from "./knowledge/projects.json";
+import achievements from "./knowledge/achievements.json";
+import mentors from "./knowledge/mentors.json";
+import faq from "./knowledge/faq.json";
 
 export const knowledge = {
   about,
