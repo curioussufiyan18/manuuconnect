@@ -1,9 +1,6 @@
- {
+{
   "name": "manuu-chatbot",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "dependencies": {
-    "@google/genai": "^1.0.0"
-  }
+  "type": "module"
 }
