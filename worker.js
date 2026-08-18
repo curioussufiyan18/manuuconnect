@@ -22,6 +22,9 @@ function normalize(text) {
     .trim();
 }
 
+/*
+  Turn the knowledge into searchable records.
+*/
 function flattenKnowledge(value, source = "", results = []) {
   if (Array.isArray(value)) {
     for (const item of value) {
@@ -84,30 +87,87 @@ function flattenKnowledge(value, source = "", results = []) {
   return results;
 }
 
-const knowledgeIndex =
-  flattenKnowledge(knowledge);
+const knowledgeIndex = flattenKnowledge(knowledge);
 
+/*
+  Better knowledge retrieval.
+
+  Returns:
+  {
+    matches: [...],
+    bestScore: number
+  }
+*/
 function searchKnowledge(query) {
-  const words = normalize(query)
+  const normalizedQuery = normalize(query);
+
+  const words = normalizedQuery
     .split(" ")
-    .filter(word => word.length > 2);
+    .filter((word) => word.length > 2);
 
   if (!words.length) {
-    return [];
+    return {
+      matches: [],
+      bestScore: 0
+    };
   }
 
-  return knowledgeIndex
-    .map(item => {
+  const ranked = knowledgeIndex
+    .map((item) => {
       const text = normalize(
         `${item.source} ${JSON.stringify(item.content)}`
       );
 
       let score = 0;
+      let matchedWords = 0;
 
+      /*
+        Word matching
+      */
       for (const word of words) {
         if (text.includes(word)) {
-          score++;
+          score += 2;
+          matchedWords++;
         }
+      }
+
+      /*
+        Exact phrase match
+      */
+      if (
+        normalizedQuery.length >= 6 &&
+        text.includes(normalizedQuery)
+      ) {
+        score += 10;
+      }
+
+      /*
+        Coverage bonus
+      */
+      const coverage =
+        words.length > 0
+          ? matchedWords / words.length
+          : 0;
+
+      score += coverage * 6;
+
+      /*
+        Source bonuses
+      */
+      if (item.source.includes("coreteam")) {
+        score += 1;
+      }
+
+      if (item.source.includes("events")) {
+        score += 1;
+      }
+
+      if (item.source.includes("mentors")) {
+        score += 1;
+      }
+
+      if (item.source.includes("faq")) {
+        score += 1;
       }
 
       return {
@@ -115,11 +175,18 @@ function searchKnowledge(query) {
         score
       };
     })
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 8);
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return {
+    matches: ranked.slice(0, 5),
+    bestScore: ranked[0]?.score || 0
+  };
 }
 
+/*
+  Search Serper.
+*/
 async function searchSerper(query, env, site) {
   if (!env.SERPER_API_KEY) {
     return [];
@@ -129,40 +196,49 @@ async function searchSerper(query, env, site) {
     ? `site:${site} ${query}`
     : query;
 
-  const response = await fetch(
-    "https://google.serper.dev/search",
-    {
-      method: "POST",
-      headers: {
-        "X-API-KEY": env.SERPER_API_KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        q: searchQuery,
-        gl: "in",
-        hl: "en",
-        num: 5
-      })
-    }
-  );
+  try {
+    const response = await fetch(
+      "https://google.serper.dev/search",
+      {
+        method: "POST",
+        headers: {
+          "X-API-KEY": env.SERPER_API_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          q: searchQuery,
+          gl: "in",
+          hl: "en",
+          num: 5
+        })
+      }
+    );
 
-  if (!response.ok) {
+    if (!response.ok) {
+      console.error(
+        "Serper error:",
+        response.status,
+        await response.text()
+      );
+
+      return [];
+    }
+
+    const data = await response.json();
+
+    return (data.organic || []).map((item) => ({
+      title: item.title || "",
+      link: item.link || "",
+      snippet: item.snippet || ""
+    }));
+  } catch (error) {
     console.error(
-      "Serper error:",
-      response.status,
-      await response.text()
+      "Serper request failed:",
+      error
     );
 
     return [];
   }
-
-  const data = await response.json();
-
-  return (data.organic || []).map(item => ({
-    title: item.title || "",
-    link: item.link || "",
-    snippet: item.snippet || ""
-  }));
 }
 
 function formatWebResults(results, sourceName) {
@@ -181,20 +257,69 @@ Snippet: ${item.snippet}`
     .join("\n\n");
 }
 
+/*
+  Simple greetings should not trigger web search.
+*/
+function isGreeting(message) {
+  const q = normalize(message);
+
+  return [
+    "hi",
+    "hello",
+    "hey",
+    "hii",
+    "hiii",
+    "heyy",
+    "yo",
+    "sup",
+    "wassup",
+    "what is up",
+    "whats up",
+    "good morning",
+    "good afternoon",
+    "good evening",
+    "thanks",
+    "thank you",
+    "ok",
+    "okay"
+  ].includes(q);
+}
+
+function greetingResponse(message) {
+  const q = normalize(message);
+
+  if (
+    q === "thanks" ||
+    q === "thank you"
+  ) {
+    return "You're welcome.";
+  }
+
+  return "Hi! 👋 How can I help you with MANUUConnect?";
+}
+
 export default {
   async fetch(request, env) {
 
+    /*
+      CORS
+    */
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type"
+          "Access-Control-Allow-Methods":
+            "GET, POST, OPTIONS",
+          "Access-Control-Allow-Headers":
+            "Content-Type"
         }
       });
     }
 
+    /*
+      Health check
+    */
     if (request.method === "GET") {
       return jsonResponse({
         status: "ok",
@@ -213,11 +338,17 @@ export default {
     }
 
     try {
+      /*
+        Read input
+      */
       const body = await request.json();
 
       const message = body?.message;
 
-      if (!message || typeof message !== "string") {
+      if (
+        !message ||
+        typeof message !== "string"
+      ) {
         return jsonResponse(
           {
             error: "Please provide a message."
@@ -247,17 +378,37 @@ export default {
       }
 
       /*
-        1. Search your own MANUUConnect knowledge first.
+        Greetings
       */
+      if (isGreeting(cleanMessage)) {
+        return jsonResponse({
+          reply: greetingResponse(cleanMessage),
+          source: null
+        });
+      }
 
-      const matches =
-        searchKnowledge(cleanMessage);
+      /*
+        1. Search local MANUUConnect knowledge
+      */
+      const {
+        matches,
+        bestScore
+      } = searchKnowledge(cleanMessage);
+
+      /*
+        Minimum confidence needed to trust
+        local knowledge.
+      */
+      const KNOWLEDGE_THRESHOLD = 7;
+
+      const strongKnowledgeMatch =
+        bestScore >= KNOWLEDGE_THRESHOLD;
 
       let knowledgeContext = "";
 
-      if (matches.length > 0) {
+      if (strongKnowledgeMatch) {
         knowledgeContext = matches
-          .map(item => {
+          .map((item) => {
             return `[MANUUConnect Knowledge]
 Source: ${item.source}
 
@@ -271,14 +422,17 @@ ${JSON.stringify(
       }
 
       /*
-        2. If local knowledge has nothing,
-           search manuuconnect.in.
+        2. If local knowledge is weak,
+           use trusted-source fallback.
       */
-
       let webContext = "";
       let webSource = "";
 
-      if (matches.length === 0) {
+      if (!strongKnowledgeMatch) {
+
+        /*
+          First: manuuconnect.in
+        */
         const websiteResults =
           await searchSerper(
             cleanMessage,
@@ -287,19 +441,17 @@ ${JSON.stringify(
           );
 
         if (websiteResults.length > 0) {
-          webContext =
-            formatWebResults(
-              websiteResults,
-              "manuuconnect.in"
-            );
+          webContext = formatWebResults(
+            websiteResults,
+            "manuuconnect.in"
+          );
 
           webSource = "manuuconnect.in";
         } else {
-          /*
-            3. If website search has nothing,
-               search LinkedIn.
-          */
 
+          /*
+            Second: LinkedIn
+          */
           const linkedinResults =
             await searchSerper(
               `MANUUConnect ${cleanMessage}`,
@@ -308,11 +460,10 @@ ${JSON.stringify(
             );
 
           if (linkedinResults.length > 0) {
-            webContext =
-              formatWebResults(
-                linkedinResults,
-                "LinkedIn"
-              );
+            webContext = formatWebResults(
+              linkedinResults,
+              "LinkedIn"
+            );
 
             webSource = "LinkedIn";
           }
@@ -320,34 +471,36 @@ ${JSON.stringify(
       }
 
       /*
-        4. Build AI context.
+        3. Build final context.
       */
-
       let context = "";
 
-      if (knowledgeContext) {
+      let source = null;
+
+      if (strongKnowledgeMatch) {
         context = knowledgeContext;
+        source = "MANUUConnect knowledge";
       } else if (webContext) {
         context = `
-Trusted external source:
+Trusted external information:
 
 ${webContext}
 `;
+        source = webSource;
       } else {
         context = `
-No matching information was found in the
-MANUUConnect knowledge base or trusted sources.
+No matching MANUUConnect information was
+found in the local knowledge or trusted sources.
 `;
       }
 
       /*
-        5. AI
+        4. AI
       */
-
       const systemPrompt = `
 You are MANUUConnect AI for manuuconnect.in.
 
-Your job is to answer questions about:
+You help with:
 - MANUUConnect
 - its team and members
 - projects
@@ -365,20 +518,35 @@ Information priority:
 2. manuuconnect.in
 3. MANUUConnect LinkedIn
 
-Use the provided information.
+Use the provided information carefully.
+
+If local MANUUConnect knowledge contains the answer,
+use it as the primary source.
+
+If trusted external information is provided,
+use it only as a secondary source.
 
 Never invent MANUUConnect facts.
 
-If the provided information does not contain the answer, say:
+If the available information does not contain
+the answer, say:
+
 "I don't have that information yet."
 
-Normal conversation and greetings are allowed.
+Normal greetings are allowed.
 
-Keep answers short, clear, and easy to understand.
+Keep the answer short.
 
-Use proper line breaks.
+Use short paragraphs.
+
+Leave a blank line between separate points.
 
 For multiple items, use bullet points or numbered lines.
+
+Use labels such as:
+Date:
+Type:
+Participants:
 
 Do not repeat the user's question.
 
@@ -387,27 +555,26 @@ Do not add unnecessary information.
 USER QUESTION:
 ${cleanMessage}
 
-INFORMATION:
+AVAILABLE INFORMATION:
 ${context}
 `;
 
-      const result =
-        await env.AI.run(
-          MODEL,
-          {
-            messages: [
-              {
-                role: "system",
-                content: systemPrompt
-              },
-              {
-                role: "user",
-                content: cleanMessage
-              }
-            ],
-            max_tokens: 300
-          }
-        );
+      const result = await env.AI.run(
+        MODEL,
+        {
+          messages: [
+            {
+              role: "system",
+              content: systemPrompt
+            },
+            {
+              role: "user",
+              content: cleanMessage
+            }
+          ],
+          max_tokens: 300
+        }
+      );
 
       const reply =
         result?.response?.trim() ||
@@ -415,10 +582,7 @@ ${context}
 
       return jsonResponse({
         reply,
-        source:
-          matches.length > 0
-            ? "MANUUConnect knowledge"
-            : webSource || null
+        source
       });
 
     } catch (error) {
