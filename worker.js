@@ -25,7 +25,18 @@ function normalize(text) {
 function flattenKnowledge(value, source = "", results = []) {
   if (Array.isArray(value)) {
     for (const item of value) {
-      flattenKnowledge(item, source, results);
+      if (
+        item &&
+        typeof item === "object" &&
+        !Array.isArray(item)
+      ) {
+        results.push({
+          source,
+          content: item
+        });
+      } else {
+        flattenKnowledge(item, source, results);
+      }
     }
 
     return results;
@@ -47,7 +58,11 @@ function flattenKnowledge(value, source = "", results = []) {
           content: child
         });
 
-        flattenKnowledge(child, nextSource, results);
+        flattenKnowledge(
+          child,
+          nextSource,
+          results
+        );
       } else {
         results.push({
           source: nextSource,
@@ -69,7 +84,8 @@ function flattenKnowledge(value, source = "", results = []) {
   return results;
 }
 
-const knowledgeIndex = flattenKnowledge(knowledge);
+const knowledgeIndex =
+  flattenKnowledge(knowledge);
 
 function searchKnowledge(query) {
   const words = normalize(query)
@@ -102,6 +118,67 @@ function searchKnowledge(query) {
     .filter(item => item.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 8);
+}
+
+async function searchSerper(query, env, site) {
+  if (!env.SERPER_API_KEY) {
+    return [];
+  }
+
+  const searchQuery = site
+    ? `site:${site} ${query}`
+    : query;
+
+  const response = await fetch(
+    "https://google.serper.dev/search",
+    {
+      method: "POST",
+      headers: {
+        "X-API-KEY": env.SERPER_API_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        q: searchQuery,
+        gl: "in",
+        hl: "en",
+        num: 5
+      })
+    }
+  );
+
+  if (!response.ok) {
+    console.error(
+      "Serper error:",
+      response.status,
+      await response.text()
+    );
+
+    return [];
+  }
+
+  const data = await response.json();
+
+  return (data.organic || []).map(item => ({
+    title: item.title || "",
+    link: item.link || "",
+    snippet: item.snippet || ""
+  }));
+}
+
+function formatWebResults(results, sourceName) {
+  if (!results.length) {
+    return "";
+  }
+
+  return results
+    .map(
+      (item, index) =>
+        `[${sourceName} ${index + 1}]
+Title: ${item.title}
+URL: ${item.link}
+Snippet: ${item.snippet}`
+    )
+    .join("\n\n");
 }
 
 export default {
@@ -160,83 +237,201 @@ export default {
         );
       }
 
-      const matches = searchKnowledge(cleanMessage);
+      if (cleanMessage.length > 1000) {
+        return jsonResponse(
+          {
+            error: "Message is too long."
+          },
+          400
+        );
+      }
 
-      const context =
-        matches.length > 0
-          ? matches
-              .map(item => {
-                return `[${item.source}]\n${JSON.stringify(
-                  item.content,
-                  null,
-                  2
-                )}`;
-              })
-              .join("\n\n")
-          : "No directly matching information was found in the MANUUConnect knowledge base.";
+      /*
+        1. Search your own MANUUConnect knowledge first.
+      */
+
+      const matches =
+        searchKnowledge(cleanMessage);
+
+      let knowledgeContext = "";
+
+      if (matches.length > 0) {
+        knowledgeContext = matches
+          .map(item => {
+            return `[MANUUConnect Knowledge]
+Source: ${item.source}
+
+${JSON.stringify(
+  item.content,
+  null,
+  2
+)}`;
+          })
+          .join("\n\n");
+      }
+
+      /*
+        2. If local knowledge has nothing,
+           search manuuconnect.in.
+      */
+
+      let webContext = "";
+      let webSource = "";
+
+      if (matches.length === 0) {
+        const websiteResults =
+          await searchSerper(
+            cleanMessage,
+            env,
+            "manuuconnect.in"
+          );
+
+        if (websiteResults.length > 0) {
+          webContext =
+            formatWebResults(
+              websiteResults,
+              "manuuconnect.in"
+            );
+
+          webSource = "manuuconnect.in";
+        } else {
+          /*
+            3. If website search has nothing,
+               search LinkedIn.
+          */
+
+          const linkedinResults =
+            await searchSerper(
+              `MANUUConnect ${cleanMessage}`,
+              env,
+              "linkedin.com"
+            );
+
+          if (linkedinResults.length > 0) {
+            webContext =
+              formatWebResults(
+                linkedinResults,
+                "LinkedIn"
+              );
+
+            webSource = "LinkedIn";
+          }
+        }
+      }
+
+      /*
+        4. Build AI context.
+      */
+
+      let context = "";
+
+      if (knowledgeContext) {
+        context = knowledgeContext;
+      } else if (webContext) {
+        context = `
+Trusted external source:
+
+${webContext}
+`;
+      } else {
+        context = `
+No matching information was found in the
+MANUUConnect knowledge base or trusted sources.
+`;
+      }
+
+      /*
+        5. AI
+      */
 
       const systemPrompt = `
-You are MANUUConnect AI.
+You are MANUUConnect AI for manuuconnect.in.
 
-You are a helpful assistant for the MANUUConnect community.
+Your job is to answer questions about:
+- MANUUConnect
+- its team and members
+- projects
+- events
+- achievements
+- mentors and alumni
+- activities
+- opportunities
+- website information
+- student learning and career guidance
 
-You have access to MANUUConnect knowledge provided below.
+Information priority:
 
-Use the provided knowledge when the user's question is about MANUUConnect.
+1. MANUUConnect knowledge
+2. manuuconnect.in
+3. MANUUConnect LinkedIn
 
-If the knowledge contains the answer, answer using that information.
+Use the provided information.
 
-If the knowledge does not contain the answer, use your general AI knowledge when appropriate.
+Never invent MANUUConnect facts.
 
-Do not claim that MANUUConnect information is present in the knowledge if it is not.
-
-Keep answers clear, natural, and easy to read.
-
-Use proper paragraphs and line breaks.
-
-For lists, use numbered or bullet-style lines.
+If the provided information does not contain the answer, say:
+"I don't have that information yet."
 
 Normal conversation and greetings are allowed.
 
-User's question:
+Keep answers short, clear, and easy to understand.
+
+Use proper line breaks.
+
+For multiple items, use bullet points or numbered lines.
+
+Do not repeat the user's question.
+
+Do not add unnecessary information.
+
+USER QUESTION:
 ${cleanMessage}
 
-MANUUConnect knowledge:
+INFORMATION:
 ${context}
 `;
 
-      const result = await env.AI.run(
-        MODEL,
-        {
-          messages: [
-            {
-              role: "system",
-              content: systemPrompt
-            },
-            {
-              role: "user",
-              content: cleanMessage
-            }
-          ],
-          max_tokens: 300
-        }
-      );
+      const result =
+        await env.AI.run(
+          MODEL,
+          {
+            messages: [
+              {
+                role: "system",
+                content: systemPrompt
+              },
+              {
+                role: "user",
+                content: cleanMessage
+              }
+            ],
+            max_tokens: 300
+          }
+        );
 
       const reply =
         result?.response?.trim() ||
         "I don't have an answer for that right now.";
 
       return jsonResponse({
-        reply
+        reply,
+        source:
+          matches.length > 0
+            ? "MANUUConnect knowledge"
+            : webSource || null
       });
 
     } catch (error) {
 
-      console.error("MANUUConnect AI error:", error);
+      console.error(
+        "MANUUConnect AI error:",
+        error
+      );
 
       return jsonResponse(
         {
-          error: "Something went wrong. Please try again."
+          error:
+            "Something went wrong. Please try again."
         },
         500
       );
