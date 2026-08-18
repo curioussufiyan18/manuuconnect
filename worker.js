@@ -23,9 +23,240 @@ function normalize(text) {
     .trim();
 }
 
-/*
-  Convert the new knowledge structure into searchable records.
-*/
+/* -----------------------------
+   STRUCTURED KNOWLEDGE
+----------------------------- */
+
+function getRecords(category) {
+  const data = knowledge?.[category];
+
+  if (!data) {
+    return [];
+  }
+
+  if (Array.isArray(data.content)) {
+    return data.content;
+  }
+
+  return [];
+}
+
+function getTeamRecords() {
+  return getRecords("team").filter(
+    item => item?.type === "team_member"
+  );
+}
+
+function getMentorRecords() {
+  return getRecords("mentors");
+}
+
+function getEventRecords() {
+  return getRecords("events");
+}
+
+function parseDate(dateString) {
+  if (!dateString) {
+    return 0;
+  }
+
+  const parts = String(dateString).split("/");
+
+  if (parts.length !== 3) {
+    return 0;
+  }
+
+  const day = Number(parts[0]);
+  const month = Number(parts[1]);
+  const year = Number(parts[2]);
+
+  const date = new Date(year, month - 1, day);
+
+  return date.getTime();
+}
+
+/* -----------------------------
+   STRUCTURED QUESTION DETECTION
+----------------------------- */
+
+function isMentorListQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("who are the mentors") ||
+    q.includes("list all mentors") ||
+    q.includes("list the mentors") ||
+    q.includes("show all mentors") ||
+    q.includes("show the mentors") ||
+    q.includes("all mentors") ||
+    q.includes("mentor list") ||
+    q.includes("mentor network")
+  );
+}
+
+function isMentorCountQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("how many mentors") ||
+    q.includes("number of mentors")
+  );
+}
+
+function isTeamListQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("who are the team members") ||
+    q.includes("who is on the team") ||
+    q.includes("who are on the team") ||
+    q.includes("list all team members") ||
+    q.includes("list the team members") ||
+    q.includes("show all team members") ||
+    q.includes("show the team members") ||
+    q.includes("all team members") ||
+    q.includes("core team")
+  );
+}
+
+function isTeamCountQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("how many team members") ||
+    q.includes("how many members are on the team") ||
+    q.includes("number of team members")
+  );
+}
+
+function isLatestEventQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("latest event") ||
+    q.includes("latest events") ||
+    q.includes("most recent event") ||
+    q.includes("recent event") ||
+    q.includes("newest event") ||
+    q.includes("upcoming event")
+  );
+}
+
+/* -----------------------------
+   STRUCTURED ANSWERS
+----------------------------- */
+
+function getMentorListAnswer() {
+  const mentors = getMentorRecords();
+
+  if (!mentors.length) {
+    return null;
+  }
+
+  const lines = mentors.map((mentor, index) => {
+    const companyPart =
+      mentor.company
+        ? `, ${mentor.company}`
+        : mentor.organization
+        ? `, ${mentor.organization}`
+        : "";
+
+    return `${index + 1}. ${mentor.name} - ${mentor.role}${companyPart}`;
+  });
+
+  return (
+    `MANUUConnect has ${mentors.length} mentors/alumni in the current directory.\n\n` +
+    lines.join("\n")
+  );
+}
+
+function getMentorCountAnswer() {
+  const mentors = getMentorRecords();
+
+  if (!mentors.length) {
+    return null;
+  }
+
+  return `The current mentor directory contains ${mentors.length} mentors/alumni.`;
+}
+
+function getTeamListAnswer() {
+  const team = getTeamRecords();
+
+  if (!team.length) {
+    return null;
+  }
+
+  const lines = team.map((member, index) => {
+    return `${index + 1}. ${member.name} - ${member.position}`;
+  });
+
+  return (
+    `MANUUConnect has ${team.length} current team members.\n\n` +
+    lines.join("\n")
+  );
+}
+
+function getTeamCountAnswer() {
+  const team = getTeamRecords();
+
+  if (!team.length) {
+    return null;
+  }
+
+  return `The current team has ${team.length} members.`;
+}
+
+function getLatestEventAnswer() {
+  const events = getEventRecords();
+
+  if (!events.length) {
+    return null;
+  }
+
+  const sorted = [...events].sort(
+    (a, b) =>
+      parseDate(b.date) - parseDate(a.date)
+  );
+
+  const latest = sorted[0];
+
+  return (
+    `The latest event in the current knowledge base is "${latest.title}".\n\n` +
+    `Date: ${latest.date}\n` +
+    `Participants: ${latest.participants}\n` +
+    `Speakers: ${latest.speakers.join(", ")}`
+  );
+}
+
+function getStructuredAnswer(message) {
+  if (isMentorListQuestion(message)) {
+    return getMentorListAnswer();
+  }
+
+  if (isMentorCountQuestion(message)) {
+    return getMentorCountAnswer();
+  }
+
+  if (isTeamListQuestion(message)) {
+    return getTeamListAnswer();
+  }
+
+  if (isTeamCountQuestion(message)) {
+    return getTeamCountAnswer();
+  }
+
+  if (isLatestEventQuestion(message)) {
+    return getLatestEventAnswer();
+  }
+
+  return null;
+}
+
+/* -----------------------------
+   KNOWLEDGE → VECTOR RECORDS
+----------------------------- */
+
 function buildKnowledgeRecords() {
   const records = [];
 
@@ -143,15 +374,10 @@ function buildEmbeddingRecords() {
   return output;
 }
 
-/*
-  One-time indexing route.
+/* -----------------------------
+   VECTORIZE INDEXING
+----------------------------- */
 
-  Open:
-  http://localhost:8787/index
-
-  This generates embeddings and upserts them
-  into your manuuconnect-index.
-*/
 async function indexKnowledge(env) {
   const records =
     buildEmbeddingRecords();
@@ -182,19 +408,10 @@ async function indexKnowledge(env) {
     );
   }
 
-  if (
-    embeddings.data.length !== records.length
-  ) {
-    throw new Error(
-      `Embedding count mismatch. Expected ${records.length}, got ${embeddings.data.length}.`
-    );
-  }
-
   const vectors =
     records.map((record, index) => ({
       id: record.id,
       values: embeddings.data[index],
-
       metadata: {
         category: record.category,
         type: record.type,
@@ -203,9 +420,6 @@ async function indexKnowledge(env) {
       }
     }));
 
-  /*
-    Upsert in batches.
-  */
   const batchSize = 50;
   const results = [];
 
@@ -221,9 +435,7 @@ async function indexKnowledge(env) {
       );
 
     const result =
-      await env.VECTORIZE.upsert(
-        batch
-      );
+      await env.VECTORIZE.upsert(batch);
 
     results.push(result);
   }
@@ -235,13 +447,11 @@ async function indexKnowledge(env) {
   };
 }
 
-/*
-  Semantic search.
-*/
-async function searchVectorize(
-  query,
-  env
-) {
+/* -----------------------------
+   VECTOR SEARCH
+----------------------------- */
+
+async function searchVectorize(query, env) {
   const embedding =
     await env.AI.run(
       EMBEDDING_MODEL,
@@ -263,7 +473,7 @@ async function searchVectorize(
     await env.VECTORIZE.query(
       queryVector,
       {
-        topK: 5,
+        topK: 8,
         returnMetadata: "all"
       }
     );
@@ -271,22 +481,17 @@ async function searchVectorize(
   return result?.matches || [];
 }
 
-/*
-  Serper fallback.
-*/
-async function searchSerper(
-  query,
-  env,
-  site
-) {
+/* -----------------------------
+   SERPER FALLBACK
+----------------------------- */
+
+async function searchSerper(query, env, site) {
   if (!env.SERPER_API_KEY) {
     return [];
   }
 
   const searchQuery =
-    site
-      ? `site:${site} ${query}`
-      : query;
+    `site:${site} ${query}`;
 
   try {
     const response =
@@ -298,7 +503,6 @@ async function searchSerper(
           headers: {
             "X-API-KEY":
               env.SERPER_API_KEY,
-
             "Content-Type":
               "application/json"
           },
@@ -324,10 +528,8 @@ async function searchSerper(
     ).map(item => ({
       title:
         item.title || "",
-
       link:
         item.link || "",
-
       snippet:
         item.snippet || ""
     }));
@@ -351,6 +553,10 @@ Snippet: ${item.snippet}`
     )
     .join("\n\n");
 }
+
+/* -----------------------------
+   GREETINGS
+----------------------------- */
 
 function isGreeting(message) {
   const q =
@@ -392,50 +598,36 @@ function greetingResponse(message) {
   return "Hi! 👋 How can I help you with MANUUConnect?";
 }
 
+/* -----------------------------
+   WORKER
+----------------------------- */
+
 export default {
   async fetch(request, env) {
-
-    /*
-      CORS
-    */
 
     if (
       request.method === "OPTIONS"
     ) {
       return new Response(null, {
         status: 204,
-
         headers: {
-          "Access-Control-Allow-Origin":
-            "*",
-
+          "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods":
             "GET, POST, OPTIONS",
-
           "Access-Control-Allow-Headers":
             "Content-Type"
         }
       });
     }
 
-    /*
-      Health check
-    */
-
     if (
       request.method === "GET"
     ) {
-
       const url =
-        new URL(
-          request.url
-        );
+        new URL(request.url);
 
       /*
-        ONE-TIME INDEXING
-
-        After it works, remove this route
-        before production deployment.
+        Temporary indexing endpoint.
       */
 
       if (
@@ -443,9 +635,7 @@ export default {
       ) {
         try {
           const result =
-            await indexKnowledge(
-              env
-            );
+            await indexKnowledge(env);
 
           return jsonResponse({
             status: "indexed",
@@ -478,10 +668,6 @@ export default {
       });
     }
 
-    /*
-      POST only for chat
-    */
-
     if (
       request.method !== "POST"
     ) {
@@ -495,11 +681,6 @@ export default {
     }
 
     try {
-
-      /*
-        Read input
-      */
-
       const body =
         await request.json();
 
@@ -533,7 +714,7 @@ export default {
       }
 
       /*
-        Greetings
+        Greeting
       */
 
       if (
@@ -546,13 +727,32 @@ export default {
             greetingResponse(
               cleanMessage
             ),
-
           source: null
         });
       }
 
       /*
-        Vector search
+        FIRST:
+        Structured questions.
+      */
+
+      const structuredAnswer =
+        getStructuredAnswer(
+          cleanMessage
+        );
+
+      if (structuredAnswer) {
+        return jsonResponse({
+          reply:
+            structuredAnswer,
+          source:
+            "MANUUConnect knowledge"
+        });
+      }
+
+      /*
+        SECOND:
+        Vectorize semantic search.
       */
 
       const matches =
@@ -561,23 +761,11 @@ export default {
           env
         );
 
-      /*
-        Cosine similarity is used by your
-        Vectorize index.
-
-        We use the strongest match as the
-        initial confidence signal.
-      */
-
       const bestScore =
         matches[0]?.score || 0;
 
-      /*
-        Start with a conservative threshold.
-        We can tune this after testing.
-      */
-
-      const VECTOR_THRESHOLD = 0.55;
+      const VECTOR_THRESHOLD =
+        0.55;
 
       const strongMatches =
         bestScore >= VECTOR_THRESHOLD
@@ -587,18 +775,12 @@ export default {
       let context = "";
       let source = null;
 
-      /*
-        Strong Vectorize result
-      */
-
       if (
         strongMatches.length > 0
       ) {
-
         context =
           strongMatches
             .map(match => {
-
               const metadata =
                 match.metadata || {};
 
@@ -608,7 +790,6 @@ Type: ${metadata.type || ""}
 Title: ${metadata.title || ""}
 
 ${metadata.text || ""}`;
-
             })
             .join("\n\n");
 
@@ -617,14 +798,11 @@ ${metadata.text || ""}`;
       }
 
       /*
-        No strong Vectorize result:
-        search official website.
+        THIRD:
+        Official website fallback.
       */
 
-      if (
-        !context
-      ) {
-
+      if (!context) {
         const websiteResults =
           await searchSerper(
             cleanMessage,
@@ -635,9 +813,7 @@ ${metadata.text || ""}`;
         if (
           websiteResults.length > 0
         ) {
-
-          context =
-            `
+          context = `
 Trusted external source:
 manuuconnect.in
 
@@ -653,14 +829,11 @@ ${formatWebResults(
       }
 
       /*
-        If official website has nothing,
-        search LinkedIn.
+        FOURTH:
+        LinkedIn fallback.
       */
 
-      if (
-        !context
-      ) {
-
+      if (!context) {
         const linkedinResults =
           await searchSerper(
             `MANUUConnect ${cleanMessage}`,
@@ -671,9 +844,7 @@ ${formatWebResults(
         if (
           linkedinResults.length > 0
         ) {
-
-          context =
-            `
+          context = `
 Trusted external source:
 LinkedIn
 
@@ -689,75 +860,60 @@ ${formatWebResults(
       }
 
       /*
-        Nothing found anywhere.
+        Nothing found.
       */
 
-      if (
-        !context
-      ) {
-        context =
-          `
+      if (!context) {
+        context = `
 No reliable MANUUConnect information
 was found for this question.
 `;
       }
 
       /*
-        AI prompt
+        AI
       */
 
       const systemPrompt = `
 You are MANUUConnect AI.
 
-You are the AI assistant for the
-MANUUConnect student community.
-
-Your job is to answer questions about:
-
+You answer questions about:
 - MANUUConnect
-- Team members
-- Mentors
-- Alumni
-- Events
-- Projects
-- Achievements
-- Internships
-- Referrals
+- team members
+- mentors
+- alumni
+- events
+- projects
+- achievements
+- internships
+- referrals
 - FAQs
-- Student guidance
-- Learning and career guidance
-
-Priority:
-
-1. MANUUConnect knowledge
-2. manuuconnect.in
-3. MANUUConnect LinkedIn
+- student guidance
+- learning and career guidance
 
 Use the provided information.
 
-For factual MANUUConnect questions,
-do not invent missing facts.
+For MANUUConnect facts, do not invent information.
 
-If reliable information is not provided,
+If reliable MANUUConnect information is unavailable,
 say:
 
 "I don't have that information yet."
 
-For student guidance questions,
-you may provide useful general guidance.
+For general student guidance, you may give useful
+general advice.
 
-Keep responses short and readable.
+Keep answers short and clear.
 
-Use proper paragraphs.
+Use short paragraphs.
 
-For multiple items, use bullet points
-or numbered lists.
+Use bullet points or numbered lists when useful.
 
-Leave blank lines between sections.
+Leave blank lines between separate sections.
 
 Do not repeat the user's question.
 
-USER:
+USER QUESTION:
 ${cleanMessage}
 
 RETRIEVED INFORMATION:
@@ -774,14 +930,12 @@ ${context}
                 content:
                   systemPrompt
               },
-
               {
                 role: "user",
                 content:
                   cleanMessage
               }
             ],
-
             max_tokens: 300
           }
         );
