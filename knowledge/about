@@ -1,0 +1,95 @@
+{
+  "id": "about_manuuconnect",
+  "type": "about",
+  "title": "What is MANUU Connect?",
+  "aliases": [
+    "MANUU Connect",
+    "MANUUConnect",
+    "community",
+    "student community"
+  ],
+  "keywords": [
+    "MANUU Connect",
+    "student-led community",
+    "CS IT students",
+    "collaboration",
+    "innovation",
+    "technical learning",
+    "projects",
+    "hackathons",
+    "career development",
+    "mission",
+    "community first",
+    "skill development",
+    "innovation hub",
+    "career growth"
+  ],
+  "content": {
+    "name": "MANUU Connect",
+    "description": "A student-led community at Maulana Azad National Urdu University (MANUU).",
+    "purpose": [
+      "Connect MANUU students",
+      "Collaborate on projects",
+      "Participate in hackathons",
+      "Develop technical and professional skills",
+      "Build careers together",
+      "Create a continuous student-to-student knowledge ecosystem"
+    ],
+    "target_students": [
+      "B.Tech",
+      "M.Tech",
+      "MCA",
+      "BSc (CS)",
+      "Other CS/IT-related programs"
+    ],
+    "community_statistics": {
+      "linkedin_followers": "1,300+",
+      "active_members": "450+",
+      "alumni_network": "50+",
+      "student_projects": "15+"
+    },
+    "features": [
+      "Events",
+      "Quizzes",
+      "Webinars",
+      "Hackathons",
+      "Projects",
+      "Mentorship",
+      "Alumni network",
+      "Student collaboration",
+      "Internship opportunities",
+      "Career support",
+      "Referrals"
+    ],
+    "main_website_actions": [
+      "Join WhatsApp Group",
+      "Apply for Core Team",
+      "Explore community",
+      "Get referrals",
+      "Contact MANUU Connect"
+    ],
+    "our_story": [
+      "MANUU Connect is operated by students and alumni.",
+      "Current students contribute to the community.",
+      "Students gain experience and develop leadership skills.",
+      "Graduating students pass the platform to upcoming students.",
+      "New students continue and expand the community.",
+      "The objective is continuous growth and knowledge transfer between batches."
+    ],
+    "mission": "The mission is to create a sustainable student-led ecosystem where knowledge flows from seniors to juniors.",
+    "mission_goals": [
+      "Learn",
+      "Collaborate",
+      "Build projects",
+      "Gain practical experience",
+      "Develop leadership skills",
+      "Prepare for careers"
+    ],
+    "core_values": {
+      "community_first": "Building a supportive network of CS/IT students at MANUU.",
+      "skill_development": "Providing hands-on experience through hackathons and real projects.",
+      "innovation_hub": "Exploring emerging technologies and creative solutions.",
+      "career_growth": "Helping students prepare for careers in technology."
+    }
+  }
+}
