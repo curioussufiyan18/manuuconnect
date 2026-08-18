@@ -1,0 +1,66 @@
+{
+  "type": "faq",
+  "title": "Frequently Asked Questions",
+  "keywords": [
+    "faq",
+    "join",
+    "cost",
+    "hackathon",
+    "projects",
+    "remote",
+    "resources",
+    "support"
+  ],
+  "content": [
+    {
+      "id": "faq_what_is",
+      "question": "What is MANUU Connect?",
+      "answer": "MANUU Connect is a platform for CS/IT students at MANUU that promotes collaboration, innovation, and learning. It provides opportunities to participate in hackathons, workshops, and real-world projects while developing technical, professional, and soft skills."
+    },
+    {
+      "id": "faq_why_created",
+      "question": "Why was MANUU Connect created?",
+      "answer": "It was created to provide talented CS/IT students with opportunities, mentorship, and exposure. It helps students showcase their potential, collaborate on projects, and prepare for academia and industry."
+    },
+    {
+      "id": "faq_who_can_join",
+      "question": "Who can join MANUU Connect?",
+      "answer": "Any CS/IT student enrolled at MANUU can join. Both beginners and experienced students are welcome."
+    },
+    {
+      "id": "faq_cost",
+      "question": "Does it cost anything to participate?",
+      "answer": "No. Participation in MANUU Connect activities such as hackathons, workshops, and other events is completely free for students."
+    },
+    {
+      "id": "faq_previous_project",
+      "question": "Can I submit a project I have already worked on?",
+      "answer": "Yes. Previous projects can be submitted when they are relevant to the event or challenge. Students should clearly mention previous work done on the project."
+    },
+    {
+      "id": "faq_hackathon_team_size",
+      "question": "What is the typical hackathon team size?",
+      "answer": "Teams generally consist of 2 to 4 members. Some events might allow solo participation. Students should check the rules of the specific event."
+    },
+    {
+      "id": "faq_resources",
+      "question": "Are resources provided for projects?",
+      "answer": "Yes. For hardware events, basic toolkits and components are provided. For software projects, required APIs, platforms, or cloud resources are made available when needed."
+    },
+    {
+      "id": "faq_remote",
+      "question": "Can I participate remotely?",
+      "answer": "Some events allow remote participation. Students should check the specific event guidelines for eligibility and virtual participation instructions."
+    },
+    {
+      "id": "faq_growth",
+      "question": "How does MANUU Connect help students grow?",
+      "answer": "MANUU Connect provides hands-on experience, mentor interaction, peer learning, real-world projects, technical skill development, soft-skill development, networking, internship preparation, research and career exposure, and leadership opportunities."
+    },
+    {
+      "id": "faq_support",
+      "question": "How can students get support?",
+      "answer": "Students can contact MANUU Connect through the website contact form, email, or WhatsApp channel. The community provides guidance, questions-and-answer support, and mentorship."
+    }
+  ]
+}

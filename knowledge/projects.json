@@ -1,0 +1,27 @@
+{
+  "type": "projects",
+  "title": "Community Projects",
+  "keywords": [
+    "projects",
+    "student projects",
+    "project details",
+    "15+ projects"
+  ],
+  "content": {
+    "total_projects": "15+",
+    "description": "MANUU Connect has 15+ student projects developed by its student community.",
+    "purpose": [
+      "Hands-on project-based learning",
+      "Technical skill development"
+    ],
+    "individual_project_details_available": false,
+    "missing_details": [
+      "Individual project names",
+      "Descriptions",
+      "Technologies",
+      "Contributors",
+      "Project links"
+    ],
+    "response_rule": "Do not invent individual project information."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "faculty_advisory",
+  "title": "Faculty / Advisory Members / Mentors",
+  "keywords": [
+    "faculty",
+    "advisory",
+    "advisors",
+    "research scholar",
+    "assistant professor"
+  ],
+  "content": [
+    {
+      "id": "faculty_md_ibrahim",
+      "name": "MD IBRAHIM",
+      "role": "Research Scholar"
+    },
+    {
+      "id": "faculty_md_nadeem_noori",
+      "name": "Md Nadeem Noori",
+      "role": "Assistant Professor @ MANUU"
+    }
+  ]
+}

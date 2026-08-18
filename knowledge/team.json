@@ -1,0 +1,184 @@
+{
+  "type": "team",
+  "title": "Current Team",
+  "keywords": [
+    "team",
+    "core team",
+    "members",
+    "developers",
+    "designers",
+    "coordinator",
+    "social media"
+  ],
+  "content": [
+    {
+      "id": "team_huzefa_bin_juned",
+      "type": "team_member",
+      "name": "Huzefa Bin Juned",
+      "aliases": [
+        "Huzefa",
+        "Huzefa Bin Juned"
+      ],
+      "position": "Lead Developer",
+      "program": "MCA",
+      "year": "2nd Year",
+      "skills": [
+        "React.js",
+        "Next.js",
+        "AWS"
+      ],
+      "additional_skills": "+4"
+    },
+    {
+      "id": "team_imran_hussain",
+      "type": "team_member",
+      "name": "Imran Hussain",
+      "aliases": [
+        "Imran"
+      ],
+      "position": "Community Manager",
+      "program": "MCA",
+      "year": "2nd Year",
+      "skills": [
+        "ReactJS",
+        "NodeJS",
+        "Tailwind CSS"
+      ],
+      "additional_skills": "+2"
+    },
+    {
+      "id": "team_merajul_haque",
+      "type": "team_member",
+      "name": "Merajul Haque",
+      "aliases": [
+        "Merajul",
+        "Meraj"
+      ],
+      "position": "Backend Developer",
+      "program": "M.Tech",
+      "year": "2nd Year",
+      "skills": [
+        "ReactJS",
+        "Next.js",
+        "Tailwind CSS"
+      ],
+      "additional_skills": "+2"
+    },
+    {
+      "id": "team_alisha_sadiq",
+      "type": "team_member",
+      "name": "Alisha Sadiq",
+      "aliases": [
+        "Alisha"
+      ],
+      "position": "Lead Designer",
+      "program": "MCA",
+      "year": "2nd Year",
+      "skills": [
+        "HTML",
+        "CSS",
+        "C"
+      ]
+    },
+    {
+      "id": "team_bushra_jabin",
+      "type": "team_member",
+      "name": "Bushra Jabin",
+      "aliases": [
+        "Bushra"
+      ],
+      "position": "Frontend Developer",
+      "program": "B.Tech",
+      "year": "3rd Year",
+      "skills": [
+        "React JS",
+        "Next JS",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "id": "team_md_rayan",
+      "type": "team_member",
+      "name": "Md Rayan",
+      "aliases": [
+        "Rayan",
+        "Md Rayan"
+      ],
+      "position": "Lead Social Media",
+      "program": "B.Tech",
+      "year": "4th Year",
+      "skills": [
+        "Data Science",
+        "Python",
+        "GitHub"
+      ],
+      "additional_skills": "+2"
+    },
+    {
+      "id": "team_mobashshir_rahman",
+      "type": "team_member",
+      "name": "Mobashshir Rahman",
+      "aliases": [
+        "Mobashshir"
+      ],
+      "position": "Student Coordinator",
+      "program": "B.Tech",
+      "year": "2nd Year",
+      "skills": [
+        "HTML",
+        "CSS",
+        "C"
+      ],
+      "additional_skills": "+1"
+    },
+    {
+      "id": "team_shahid_hussain",
+      "type": "team_member",
+      "name": "Shahid Hussain",
+      "aliases": [
+        "Shahid"
+      ],
+      "position": "Tech & AI Team",
+      "program": "B.Tech",
+      "year": "2nd Year",
+      "skills": [
+        "HTML",
+        "CSS",
+        "React"
+      ],
+      "additional_skills": "+1"
+    },
+    {
+      "id": "team_md_meraz",
+      "type": "team_member",
+      "name": "MD MERAZ",
+      "aliases": [
+        "Meraz",
+        "MD Meraz"
+      ],
+      "position": "Design & Video Team",
+      "program": "B.Tech",
+      "year": "2nd Year",
+      "skills": [
+        "HTML",
+        "CSS"
+      ]
+    }
+  ],
+  "past_team_members": [
+    {
+      "name": "Yaqoob",
+      "roles": [
+        "Social Media & Editing",
+        "Designing"
+      ]
+    },
+    {
+      "name": "Md Shahid Jamal",
+      "roles": [
+        "Student Coordinator"
+      ],
+      "program": "B.Tech"
+    }
+  ]
+}

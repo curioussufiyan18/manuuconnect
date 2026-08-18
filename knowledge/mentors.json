@@ -1,0 +1,283 @@
+{
+  "type": "mentors",
+  "title": "Alumni and Mentor Directory",
+  "keywords": [
+    "mentors",
+    "alumni",
+    "mentor network",
+    "career",
+    "professionals"
+  ],
+  "content": [
+    {
+      "id": "mentor_mohd_shahid",
+      "name": "Mohd Shahid",
+      "aliases": [
+        "Mohd Shahid"
+      ],
+      "role": "Computer Vision Engineer",
+      "company": "Nabeh",
+      "experience": "2024",
+      "skills": [
+        "Python",
+        "Machine Learning"
+      ],
+      "linkedin": "https://www.linkedin.com/in/msaligs/"
+    },
+    {
+      "id": "mentor_md_tafsirul_haque_danish",
+      "name": "Md Tafsirul Haque Danish",
+      "aliases": [
+        "Tafsirul Haque Danish"
+      ],
+      "role": "Senior Frontend Developer",
+      "company": "Oracle",
+      "experience": "2013",
+      "skills": [
+        "Gen AI",
+        "React"
+      ],
+      "linkedin": "https://www.linkedin.com/in/mthdanish/"
+    },
+    {
+      "id": "mentor_md_seraj_ahmad",
+      "name": "Md Seraj Ahmad",
+      "role": "Software Engineer",
+      "company": "Bharat Electronic Limited.",
+      "experience": "2023",
+      "skills": [
+        "Core Java",
+        "DSA"
+      ],
+      "linkedin": "https://www.linkedin.com/in/md-seraj-ahmad-7142ab217/"
+    },
+    {
+      "id": "mentor_rehan_ansari",
+      "name": "Rehan Ansari",
+      "role": "Software Engineer",
+      "company": "Clover Infotech Pvt Ltd",
+      "experience": "2018",
+      "skills": [
+        "VueJS",
+        "Frappe"
+      ],
+      "linkedin": "https://www.linkedin.com/in/rehan-ansari-089a5212b"
+    },
+    {
+      "id": "mentor_asad_ahmad",
+      "name": "Asad Ahmad",
+      "role": "Application Development Analyst",
+      "company": "Accenture",
+      "experience": "2021",
+      "skills": [
+        "Dynamics 365",
+        "Azure"
+      ],
+      "linkedin": "https://www.linkedin.com/in/asad-ahmad-2454a3196/"
+    },
+    {
+      "id": "mentor_md_anash_ansari",
+      "name": "Md Anash Ansari",
+      "role": "Senior Software Developer",
+      "company": "IntraEdge",
+      "experience": "2019",
+      "skills": [
+        "Java",
+        "Microservices"
+      ],
+      "linkedin": "https://www.linkedin.com/in/ansarianashnp/"
+    },
+    {
+      "id": "mentor_mohammad_khalid_ansari",
+      "name": "Mohammad Khalid Ansari",
+      "role": "Associate Cloud Engineer 1",
+      "company": "Nexturn Pvt Ltd",
+      "experience": "2020",
+      "skills": [
+        "Cloud",
+        "DevOps"
+      ],
+      "linkedin": "https://www.linkedin.com/in/mohammad-khalid-ansari-64015924a"
+    },
+    {
+      "id": "mentor_mohammad_shahid",
+      "name": "Mohammad Shahid",
+      "role": "Senior Data Engineer",
+      "company": "LTIMindtree",
+      "experience": "2018",
+      "skills": [
+        "Spark",
+        "GCP"
+      ],
+      "linkedin": "https://www.linkedin.com/in/mohammad-shahid-4480b7140/"
+    },
+    {
+      "id": "mentor_faiza_aftab",
+      "name": "Faiza Aftab",
+      "role": "Web Developer",
+      "company": "RevenueHero",
+      "experience": "2022",
+      "skills": [
+        "Web Tech",
+        "ReactJS"
+      ],
+      "linkedin": "https://www.linkedin.com/in/faiza-aftab-98b03a212"
+    },
+    {
+      "id": "mentor_zahid_rizwan",
+      "name": "Zahid Rizwan",
+      "role": "Mobile App Developer",
+      "company": "WhatBytes",
+      "experience": "2025",
+      "skills": [
+        "Dart",
+        "Flutter"
+      ],
+      "linkedin": "https://www.linkedin.com/in/zahid-rizwan"
+    },
+    {
+      "id": "mentor_md_abid_raza",
+      "name": "Md Abid Raza",
+      "role": "Lab Programmer",
+      "company": "Lord's Institute",
+      "experience": "2022",
+      "skills": [
+        "React JS",
+        "JavaScript"
+      ],
+      "linkedin": "https://www.linkedin.com/in/mdabidraza"
+    },
+    {
+      "id": "mentor_abdul_malik",
+      "name": "Abdul Malik",
+      "role": "Java Backend Developer",
+      "company": "Infosys",
+      "experience": "2023",
+      "skills": [
+        "Spring Boot",
+        "SQL"
+      ],
+      "linkedin": "https://www.linkedin.com/in/abdul-malik29"
+    },
+    {
+      "id": "mentor_mohd_nasir",
+      "name": "Mohd Nasir",
+      "role": "System Developer",
+      "company": "Data Resolve Technologies",
+      "experience": "2022",
+      "skills": [
+        "SQL",
+        "Data Science"
+      ],
+      "linkedin": "https://www.linkedin.com/in/mohd-nasir-251a6b194"
+    },
+    {
+      "id": "mentor_dilshad_ashraf",
+      "name": "Dilshad Ashraf",
+      "role": "Full Stack Engineer",
+      "company": "CBA Services Pvt. Ltd",
+      "experience": "2026",
+      "skills": [
+        ".NET",
+        "Microservices"
+      ],
+      "linkedin": "https://www.linkedin.com/in/dilshad-ashraf-195b20a8"
+    },
+    {
+      "id": "mentor_aftab_raza",
+      "name": "Aftab Raza",
+      "role": "Cyber Security",
+      "organization": "NIT Patna",
+      "experience": "2025",
+      "skills": [
+        "Ethical Hacker",
+        "Software Developer"
+      ],
+      "linkedin": "https://www.linkedin.com/in/aftabinhustle"
+    },
+    {
+      "id": "mentor_mohd_waqar_hashim",
+      "name": "Mohd Waqar Hashim",
+      "role": "Software Developer",
+      "company": "TeraCloudX USA",
+      "experience": "2023",
+      "skills": [
+        ".NET",
+        "API Development"
+      ],
+      "linkedin": "https://www.linkedin.com/in/mohd-waqar-hashim-2705b41aa/"
+    },
+    {
+      "id": "mentor_md_dilshad",
+      "name": "Md Dilshad",
+      "role": "Frontend Developer",
+      "company": "Infosys",
+      "experience": "2022",
+      "skills": [
+        "Next.js",
+        "TypeScript"
+      ],
+      "linkedin": "https://www.linkedin.com/in/frontend-dev-shad/"
+    },
+    {
+      "id": "mentor_ashad_jamal",
+      "name": "Ashad Jamal",
+      "role": "Programmer Analyst",
+      "company": "Cognizant",
+      "experience": "2025",
+      "skills": [
+        "C#",
+        "Angular"
+      ],
+      "linkedin": "https://www.linkedin.com/in/ashad-jamal/"
+    },
+    {
+      "id": "mentor_md_yazdan_rizwan",
+      "name": "Md Yazdan Rizwan",
+      "role": "Data Engineer",
+      "company": "Invesco Ltd.",
+      "experience": "2023",
+      "skills": [
+        "AWS",
+        "Data Science"
+      ],
+      "linkedin": "https://www.linkedin.com/in/md-yazdan-rizwan-2966b91a7/"
+    },
+    {
+      "id": "mentor_syed_mohd_zeeshan_ali",
+      "name": "Syed Mohd Zeeshan Ali",
+      "role": "Android App Developer",
+      "company": "People Tech Group Inc.",
+      "experience": "2023",
+      "skills": [
+        "Kotlin",
+        "Android Jetpack"
+      ],
+      "linkedin": "https://www.linkedin.com/in/syed-mohd-zeeshan-ali-154b81217"
+    },
+    {
+      "id": "mentor_hibbanur_rahman",
+      "name": "Hibbanur Rahman",
+      "role": "Full Stack Web Developer",
+      "company": "Mithila Stack",
+      "experience": "2025",
+      "skills": [
+        "React Native",
+        "Node.js"
+      ],
+      "linkedin": "https://www.linkedin.com/in/hibbanur-rahman/"
+    },
+    {
+      "id": "mentor_md_tauqueer_manzar",
+      "name": "Md Tauqueer Manzar",
+      "role": "Programmer Analyst Trainee",
+      "company": "Cognizant",
+      "experience": "2025",
+      "skills": [
+        "Java",
+        "Next.js"
+      ],
+      "linkedin": "https://www.linkedin.com/in/md-tauqueer-manzar-268408233/"
+    }
+  ]
+}

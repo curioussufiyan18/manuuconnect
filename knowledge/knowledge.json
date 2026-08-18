@@ -1,0 +1,918 @@
+[
+  {
+    "id": "about_manuuconnect",
+    "type": "about",
+    "title": "What is MANUU Connect?",
+    "aliases": [
+      "MANUU Connect",
+      "MANUUConnect",
+      "community",
+      "student community"
+    ],
+    "keywords": [
+      "MANUU Connect",
+      "student-led community",
+      "CS IT students",
+      "collaboration",
+      "innovation",
+      "technical learning",
+      "projects",
+      "hackathons",
+      "career development",
+      "mission",
+      "community first",
+      "skill development",
+      "innovation hub",
+      "career growth"
+    ],
+    "content": {
+      "name": "MANUU Connect",
+      "description": "A student-led community at Maulana Azad National Urdu University (MANUU).",
+      "purpose": [
+        "Connect MANUU students",
+        "Collaborate on projects",
+        "Participate in hackathons",
+        "Develop technical and professional skills",
+        "Build careers together",
+        "Create a continuous student-to-student knowledge ecosystem"
+      ],
+      "target_students": [
+        "B.Tech",
+        "M.Tech",
+        "MCA",
+        "BSc (CS)",
+        "Other CS/IT-related programs"
+      ],
+      "community_statistics": {
+        "linkedin_followers": "1,300+",
+        "active_members": "450+",
+        "alumni_network": "50+",
+        "student_projects": "15+"
+      },
+      "features": [
+        "Events",
+        "Quizzes",
+        "Webinars",
+        "Hackathons",
+        "Projects",
+        "Mentorship",
+        "Alumni network",
+        "Student collaboration",
+        "Internship opportunities",
+        "Career support",
+        "Referrals"
+      ],
+      "main_website_actions": [
+        "Join WhatsApp Group",
+        "Apply for Core Team",
+        "Explore community",
+        "Get referrals",
+        "Contact MANUU Connect"
+      ],
+      "our_story": [
+        "MANUU Connect is operated by students and alumni.",
+        "Current students contribute to the community.",
+        "Students gain experience and develop leadership skills.",
+        "Graduating students pass the platform to upcoming students.",
+        "New students continue and expand the community.",
+        "The objective is continuous growth and knowledge transfer between batches."
+      ],
+      "mission": "The mission is to create a sustainable student-led ecosystem where knowledge flows from seniors to juniors.",
+      "mission_goals": [
+        "Learn",
+        "Collaborate",
+        "Build projects",
+        "Gain practical experience",
+        "Develop leadership skills",
+        "Prepare for careers"
+      ],
+      "core_values": {
+        "community_first": "Building a supportive network of CS/IT students at MANUU.",
+        "skill_development": "Providing hands-on experience through hackathons and real projects.",
+        "innovation_hub": "Exploring emerging technologies and creative solutions.",
+        "career_growth": "Helping students prepare for careers in technology."
+      }
+    }
+  },
+  {
+    "type": "team",
+    "title": "Current Team",
+    "keywords": [
+      "team",
+      "core team",
+      "members",
+      "developers",
+      "designers",
+      "coordinator",
+      "social media"
+    ],
+    "content": [
+      {
+        "id": "team_huzefa_bin_juned",
+        "type": "team_member",
+        "name": "Huzefa Bin Juned",
+        "aliases": [
+          "Huzefa",
+          "Huzefa Bin Juned"
+        ],
+        "position": "Lead Developer",
+        "program": "MCA",
+        "year": "2nd Year",
+        "skills": [
+          "React.js",
+          "Next.js",
+          "AWS"
+        ],
+        "additional_skills": "+4"
+      },
+      {
+        "id": "team_imran_hussain",
+        "type": "team_member",
+        "name": "Imran Hussain",
+        "aliases": [
+          "Imran"
+        ],
+        "position": "Community Manager",
+        "program": "MCA",
+        "year": "2nd Year",
+        "skills": [
+          "ReactJS",
+          "NodeJS",
+          "Tailwind CSS"
+        ],
+        "additional_skills": "+2"
+      },
+      {
+        "id": "team_merajul_haque",
+        "type": "team_member",
+        "name": "Merajul Haque",
+        "aliases": [
+          "Merajul",
+          "Meraj"
+        ],
+        "position": "Backend Developer",
+        "program": "M.Tech",
+        "year": "2nd Year",
+        "skills": [
+          "ReactJS",
+          "Next.js",
+          "Tailwind CSS"
+        ],
+        "additional_skills": "+2"
+      },
+      {
+        "id": "team_alisha_sadiq",
+        "type": "team_member",
+        "name": "Alisha Sadiq",
+        "aliases": [
+          "Alisha"
+        ],
+        "position": "Lead Designer",
+        "program": "MCA",
+        "year": "2nd Year",
+        "skills": [
+          "HTML",
+          "CSS",
+          "C"
+        ]
+      },
+      {
+        "id": "team_bushra_jabin",
+        "type": "team_member",
+        "name": "Bushra Jabin",
+        "aliases": [
+          "Bushra"
+        ],
+        "position": "Frontend Developer",
+        "program": "B.Tech",
+        "year": "3rd Year",
+        "skills": [
+          "React JS",
+          "Next JS",
+          "Tailwind CSS"
+        ]
+      },
+      {
+        "id": "team_md_rayan",
+        "type": "team_member",
+        "name": "Md Rayan",
+        "aliases": [
+          "Rayan",
+          "Md Rayan"
+        ],
+        "position": "Lead Social Media",
+        "program": "B.Tech",
+        "year": "4th Year",
+        "skills": [
+          "Data Science",
+          "Python",
+          "GitHub"
+        ],
+        "additional_skills": "+2"
+      },
+      {
+        "id": "team_mobashshir_rahman",
+        "type": "team_member",
+        "name": "Mobashshir Rahman",
+        "aliases": [
+          "Mobashshir"
+        ],
+        "position": "Student Coordinator",
+        "program": "B.Tech",
+        "year": "2nd Year",
+        "skills": [
+          "HTML",
+          "CSS",
+          "C"
+        ],
+        "additional_skills": "+1"
+      },
+      {
+        "id": "team_shahid_hussain",
+        "type": "team_member",
+        "name": "Shahid Hussain",
+        "aliases": [
+          "Shahid"
+        ],
+        "position": "Tech & AI Team",
+        "program": "B.Tech",
+        "year": "2nd Year",
+        "skills": [
+          "HTML",
+          "CSS",
+          "React"
+        ],
+        "additional_skills": "+1"
+      },
+      {
+        "id": "team_md_meraz",
+        "type": "team_member",
+        "name": "MD MERAZ",
+        "aliases": [
+          "Meraz",
+          "MD Meraz"
+        ],
+        "position": "Design & Video Team",
+        "program": "B.Tech",
+        "year": "2nd Year",
+        "skills": [
+          "HTML",
+          "CSS"
+        ]
+      }
+    ],
+    "past_team_members": [
+      {
+        "name": "Yaqoob",
+        "roles": [
+          "Social Media & Editing",
+          "Designing"
+        ]
+      },
+      {
+        "name": "Md Shahid Jamal",
+        "roles": [
+          "Student Coordinator"
+        ],
+        "program": "B.Tech"
+      }
+    ]
+  },
+  {
+    "type": "events",
+    "title": "MANUU Connect Events",
+    "keywords": [
+      "events",
+      "webinar",
+      "workshop",
+      "career",
+      "hackathon",
+      "latest event"
+    ],
+    "content": [
+      {
+        "id": "event_career_guidance_industry_awareness_2026",
+        "type": "event",
+        "title": "Career Guidance & Industry Awareness Program",
+        "date": "14/08/2026",
+        "participants": 248,
+        "topics": [
+          "IT Career Paths",
+          "Web Development",
+          "MERN",
+          ".NET",
+          "Mobile Development",
+          "Data Science",
+          "Cybersecurity",
+          "Software Engineering",
+          "Programming Fundamentals",
+          "Problem Solving",
+          "Data Structures & Algorithms",
+          "LeetCode",
+          "GeeksforGeeks",
+          "GitHub",
+          "Career Roadmap",
+          "Software Development Life Cycle",
+          "Backend Development",
+          "APIs",
+          "Databases",
+          "Application Architecture",
+          "Cloud Computing",
+          "AWS",
+          "DevOps",
+          "Deployment Pipelines",
+          "Scalability",
+          "High Availability",
+          "Modern Development Practices",
+          "Android Development",
+          "Industry Expectations",
+          "Real-World Projects",
+          "Practical Experience"
+        ],
+        "speakers": [
+          "Syed Mohd Zeeshan Ali",
+          "Mohd Waqar Hashim"
+        ]
+      },
+      {
+        "id": "event_summer_sprint_26",
+        "type": "event",
+        "title": "Summer Sprint '26: Learn, Build & Launch Your Career",
+        "date": "13/06/2026",
+        "participants": 42,
+        "topics": [
+          "Career Roadmapping",
+          "Goal Setting",
+          "Git",
+          "GitHub",
+          "Web Development",
+          "Frontend Development",
+          "Full-Stack Development",
+          "Data Structures and Algorithms",
+          "Cloud Computing",
+          "DevOps",
+          "Artificial Intelligence",
+          "Resume Building",
+          "LinkedIn Optimization",
+          "Interview Preparation",
+          "Project Development",
+          "Open Source",
+          "Freelancing",
+          "Internship Preparation",
+          "Team Collaboration"
+        ],
+        "speakers": [
+          "Dilshad Ashraf",
+          "MD. Ibrahim"
+        ]
+      },
+      {
+        "id": "event_next_gen_technologies_2026",
+        "type": "event",
+        "title": "Next-Gen Technologies: AI/ML, Generative AI, Agentic AI & Blockchain",
+        "date": "27/02/2026",
+        "participants": 80,
+        "topics": [
+          "Artificial Intelligence",
+          "Machine Learning",
+          "Deep Learning",
+          "Generative AI",
+          "Large Language Models",
+          "Agentic AI",
+          "Autonomous AI Systems",
+          "Prompt Engineering",
+          "Blockchain Technology",
+          "Smart Contracts",
+          "Web3",
+          "Decentralized Applications",
+          "AI in Industry",
+          "Future Tech Careers"
+        ],
+        "speakers": [
+          "Prof. (Dr.) Syed Imtiyaz Hassan",
+          "Mohd. Rashedin"
+        ]
+      },
+      {
+        "id": "event_git_github_workshop_2026",
+        "type": "event",
+        "title": "Getting Started with Git & GitHub: A Hands-On Workshop",
+        "date": "18/01/2026",
+        "participants": 71,
+        "topics": [
+          "Git",
+          "GitHub",
+          "Version Control",
+          "Git Installation",
+          "Git Workflow",
+          "Repository Management",
+          "Git Init",
+          "Git Status",
+          "Git Add",
+          "Git Commit",
+          "Git Push",
+          "Git Pull",
+          "Git Clone",
+          "Branching Basics",
+          "Forking",
+          "Pull Requests",
+          "Collaboration Workflow",
+          "Best Practices"
+        ],
+        "speakers": [
+          "Syed Mohd Zeeshan Ali",
+          "Md Nadeem Noori"
+        ]
+      },
+      {
+        "id": "event_getting_started_in_tech_2026",
+        "type": "event",
+        "title": "Getting Started in Tech: Coding, DSA & Career Paths",
+        "date": "04/01/2026",
+        "participants": 37,
+        "topics": [
+          "Introduction to Coding",
+          "How to Start Programming",
+          "Choosing Your First Programming Language",
+          "Basics of Computer Science",
+          "Understanding DSA",
+          "Importance of DSA in Interviews",
+          "What Is Development",
+          "Web Development",
+          "App Development",
+          "DSA vs Development",
+          "Career Paths in Tech",
+          "Software Engineering Roles",
+          "Frontend vs Backend vs Full Stack",
+          "Learning Roadmaps",
+          "Free Learning Resources",
+          "Common Beginner Mistakes",
+          "Balancing College and Coding",
+          "Building Consistency",
+          "Real-World Tech Insights",
+          "Q&A and Doubt Clearing"
+        ],
+        "speakers": [
+          "Hibbanur Rahman",
+          "Md Tauqueer Manzar"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mentors",
+    "title": "Alumni and Mentor Directory",
+    "keywords": [
+      "mentors",
+      "alumni",
+      "mentor network",
+      "career",
+      "professionals"
+    ],
+    "content": [
+      {
+        "id": "mentor_mohd_shahid",
+        "name": "Mohd Shahid",
+        "aliases": [
+          "Mohd Shahid"
+        ],
+        "role": "Computer Vision Engineer",
+        "company": "Nabeh",
+        "experience": "2024",
+        "skills": [
+          "Python",
+          "Machine Learning"
+        ],
+        "linkedin": "https://www.linkedin.com/in/msaligs/"
+      },
+      {
+        "id": "mentor_md_tafsirul_haque_danish",
+        "name": "Md Tafsirul Haque Danish",
+        "aliases": [
+          "Tafsirul Haque Danish"
+        ],
+        "role": "Senior Frontend Developer",
+        "company": "Oracle",
+        "experience": "2013",
+        "skills": [
+          "Gen AI",
+          "React"
+        ],
+        "linkedin": "https://www.linkedin.com/in/mthdanish/"
+      },
+      {
+        "id": "mentor_md_seraj_ahmad",
+        "name": "Md Seraj Ahmad",
+        "role": "Software Engineer",
+        "company": "Bharat Electronic Limited.",
+        "experience": "2023",
+        "skills": [
+          "Core Java",
+          "DSA"
+        ],
+        "linkedin": "https://www.linkedin.com/in/md-seraj-ahmad-7142ab217/"
+      },
+      {
+        "id": "mentor_rehan_ansari",
+        "name": "Rehan Ansari",
+        "role": "Software Engineer",
+        "company": "Clover Infotech Pvt Ltd",
+        "experience": "2018",
+        "skills": [
+          "VueJS",
+          "Frappe"
+        ],
+        "linkedin": "https://www.linkedin.com/in/rehan-ansari-089a5212b"
+      },
+      {
+        "id": "mentor_asad_ahmad",
+        "name": "Asad Ahmad",
+        "role": "Application Development Analyst",
+        "company": "Accenture",
+        "experience": "2021",
+        "skills": [
+          "Dynamics 365",
+          "Azure"
+        ],
+        "linkedin": "https://www.linkedin.com/in/asad-ahmad-2454a3196/"
+      },
+      {
+        "id": "mentor_md_anash_ansari",
+        "name": "Md Anash Ansari",
+        "role": "Senior Software Developer",
+        "company": "IntraEdge",
+        "experience": "2019",
+        "skills": [
+          "Java",
+          "Microservices"
+        ],
+        "linkedin": "https://www.linkedin.com/in/ansarianashnp/"
+      },
+      {
+        "id": "mentor_mohammad_khalid_ansari",
+        "name": "Mohammad Khalid Ansari",
+        "role": "Associate Cloud Engineer 1",
+        "company": "Nexturn Pvt Ltd",
+        "experience": "2020",
+        "skills": [
+          "Cloud",
+          "DevOps"
+        ],
+        "linkedin": "https://www.linkedin.com/in/mohammad-khalid-ansari-64015924a"
+      },
+      {
+        "id": "mentor_mohammad_shahid",
+        "name": "Mohammad Shahid",
+        "role": "Senior Data Engineer",
+        "company": "LTIMindtree",
+        "experience": "2018",
+        "skills": [
+          "Spark",
+          "GCP"
+        ],
+        "linkedin": "https://www.linkedin.com/in/mohammad-shahid-4480b7140/"
+      },
+      {
+        "id": "mentor_faiza_aftab",
+        "name": "Faiza Aftab",
+        "role": "Web Developer",
+        "company": "RevenueHero",
+        "experience": "2022",
+        "skills": [
+          "Web Tech",
+          "ReactJS"
+        ],
+        "linkedin": "https://www.linkedin.com/in/faiza-aftab-98b03a212"
+      },
+      {
+        "id": "mentor_zahid_rizwan",
+        "name": "Zahid Rizwan",
+        "role": "Mobile App Developer",
+        "company": "WhatBytes",
+        "experience": "2025",
+        "skills": [
+          "Dart",
+          "Flutter"
+        ],
+        "linkedin": "https://www.linkedin.com/in/zahid-rizwan"
+      },
+      {
+        "id": "mentor_md_abid_raza",
+        "name": "Md Abid Raza",
+        "role": "Lab Programmer",
+        "company": "Lord's Institute",
+        "experience": "2022",
+        "skills": [
+          "React JS",
+          "JavaScript"
+        ],
+        "linkedin": "https://www.linkedin.com/in/mdabidraza"
+      },
+      {
+        "id": "mentor_abdul_malik",
+        "name": "Abdul Malik",
+        "role": "Java Backend Developer",
+        "company": "Infosys",
+        "experience": "2023",
+        "skills": [
+          "Spring Boot",
+          "SQL"
+        ],
+        "linkedin": "https://www.linkedin.com/in/abdul-malik29"
+      },
+      {
+        "id": "mentor_mohd_nasir",
+        "name": "Mohd Nasir",
+        "role": "System Developer",
+        "company": "Data Resolve Technologies",
+        "experience": "2022",
+        "skills": [
+          "SQL",
+          "Data Science"
+        ],
+        "linkedin": "https://www.linkedin.com/in/mohd-nasir-251a6b194"
+      },
+      {
+        "id": "mentor_dilshad_ashraf",
+        "name": "Dilshad Ashraf",
+        "role": "Full Stack Engineer",
+        "company": "CBA Services Pvt. Ltd",
+        "experience": "2026",
+        "skills": [
+          ".NET",
+          "Microservices"
+        ],
+        "linkedin": "https://www.linkedin.com/in/dilshad-ashraf-195b20a8"
+      },
+      {
+        "id": "mentor_aftab_raza",
+        "name": "Aftab Raza",
+        "role": "Cyber Security",
+        "organization": "NIT Patna",
+        "experience": "2025",
+        "skills": [
+          "Ethical Hacker",
+          "Software Developer"
+        ],
+        "linkedin": "https://www.linkedin.com/in/aftabinhustle"
+      },
+      {
+        "id": "mentor_mohd_waqar_hashim",
+        "name": "Mohd Waqar Hashim",
+        "role": "Software Developer",
+        "company": "TeraCloudX USA",
+        "experience": "2023",
+        "skills": [
+          ".NET",
+          "API Development"
+        ],
+        "linkedin": "https://www.linkedin.com/in/mohd-waqar-hashim-2705b41aa/"
+      },
+      {
+        "id": "mentor_md_dilshad",
+        "name": "Md Dilshad",
+        "role": "Frontend Developer",
+        "company": "Infosys",
+        "experience": "2022",
+        "skills": [
+          "Next.js",
+          "TypeScript"
+        ],
+        "linkedin": "https://www.linkedin.com/in/frontend-dev-shad/"
+      },
+      {
+        "id": "mentor_ashad_jamal",
+        "name": "Ashad Jamal",
+        "role": "Programmer Analyst",
+        "company": "Cognizant",
+        "experience": "2025",
+        "skills": [
+          "C#",
+          "Angular"
+        ],
+        "linkedin": "https://www.linkedin.com/in/ashad-jamal/"
+      },
+      {
+        "id": "mentor_md_yazdan_rizwan",
+        "name": "Md Yazdan Rizwan",
+        "role": "Data Engineer",
+        "company": "Invesco Ltd.",
+        "experience": "2023",
+        "skills": [
+          "AWS",
+          "Data Science"
+        ],
+        "linkedin": "https://www.linkedin.com/in/md-yazdan-rizwan-2966b91a7/"
+      },
+      {
+        "id": "mentor_syed_mohd_zeeshan_ali",
+        "name": "Syed Mohd Zeeshan Ali",
+        "role": "Android App Developer",
+        "company": "People Tech Group Inc.",
+        "experience": "2023",
+        "skills": [
+          "Kotlin",
+          "Android Jetpack"
+        ],
+        "linkedin": "https://www.linkedin.com/in/syed-mohd-zeeshan-ali-154b81217"
+      },
+      {
+        "id": "mentor_hibbanur_rahman",
+        "name": "Hibbanur Rahman",
+        "role": "Full Stack Web Developer",
+        "company": "Mithila Stack",
+        "experience": "2025",
+        "skills": [
+          "React Native",
+          "Node.js"
+        ],
+        "linkedin": "https://www.linkedin.com/in/hibbanur-rahman/"
+      },
+      {
+        "id": "mentor_md_tauqueer_manzar",
+        "name": "Md Tauqueer Manzar",
+        "role": "Programmer Analyst Trainee",
+        "company": "Cognizant",
+        "experience": "2025",
+        "skills": [
+          "Java",
+          "Next.js"
+        ],
+        "linkedin": "https://www.linkedin.com/in/md-tauqueer-manzar-268408233/"
+      }
+    ]
+  },
+  {
+    "type": "faculty_advisory",
+    "title": "Faculty / Advisory Members / Mentors",
+    "keywords": [
+      "faculty",
+      "advisory",
+      "advisors",
+      "research scholar",
+      "assistant professor"
+    ],
+    "content": [
+      {
+        "id": "faculty_md_ibrahim",
+        "name": "MD IBRAHIM",
+        "role": "Research Scholar"
+      },
+      {
+        "id": "faculty_md_nadeem_noori",
+        "name": "Md Nadeem Noori",
+        "role": "Assistant Professor @ MANUU"
+      }
+    ]
+  },
+  {
+    "type": "projects",
+    "title": "Community Projects",
+    "keywords": [
+      "projects",
+      "student projects",
+      "project details",
+      "15+ projects"
+    ],
+    "content": {
+      "total_projects": "15+",
+      "description": "MANUU Connect has 15+ student projects developed by its student community.",
+      "purpose": [
+        "Hands-on project-based learning",
+        "Technical skill development"
+      ],
+      "individual_project_details_available": false,
+      "missing_details": [
+        "Individual project names",
+        "Descriptions",
+        "Technologies",
+        "Contributors",
+        "Project links"
+      ],
+      "response_rule": "Do not invent individual project information."
+    }
+  },
+  {
+    "type": "achievements",
+    "title": "Achievements",
+    "keywords": [
+      "achievement",
+      "AZAD IT EXPO",
+      "2nd position",
+      "award"
+    ],
+    "content": [
+      {
+        "id": "achievement_azad_it_expo_2025",
+        "name": "AZAD IT EXPO 2025",
+        "achievement": "MANUU Connect secured 2nd position.",
+        "organizer": "Department of CS & IT, Maulana Azad National Urdu University, Hyderabad",
+        "shared_through": "LinkedIn"
+      }
+    ]
+  },
+  {
+    "type": "internship",
+    "title": "MANUU Connect Internship",
+    "keywords": [
+      "internship",
+      "6 months",
+      "mentorship",
+      "real projects",
+      "industry exposure"
+    ],
+    "content": {
+      "name": "MANUU Connect Internship",
+      "duration": "6 months",
+      "type": "Hands-on internship program",
+      "description": "6-month intensive internship program.",
+      "features": [
+        "Mentorship",
+        "Real projects",
+        "Industry exposure"
+      ],
+      "website_action": "Apply Now"
+    }
+  },
+  {
+    "type": "referrals",
+    "title": "Get Referrals",
+    "keywords": [
+      "referrals",
+      "referral",
+      "job opportunities",
+      "network",
+      "mentorship"
+    ],
+    "content": {
+      "name": "Get Referrals",
+      "purpose": "Help students leverage the MANUU Connect network and mentorship for job opportunities."
+    }
+  },
+  {
+    "type": "faq",
+    "title": "Frequently Asked Questions",
+    "keywords": [
+      "faq",
+      "join",
+      "cost",
+      "hackathon",
+      "projects",
+      "remote",
+      "resources",
+      "support"
+    ],
+    "content": [
+      {
+        "id": "faq_what_is",
+        "question": "What is MANUU Connect?",
+        "answer": "MANUU Connect is a platform for CS/IT students at MANUU that promotes collaboration, innovation, and learning. It provides opportunities to participate in hackathons, workshops, and real-world projects while developing technical, professional, and soft skills."
+      },
+      {
+        "id": "faq_why_created",
+        "question": "Why was MANUU Connect created?",
+        "answer": "It was created to provide talented CS/IT students with opportunities, mentorship, and exposure. It helps students showcase their potential, collaborate on projects, and prepare for academia and industry."
+      },
+      {
+        "id": "faq_who_can_join",
+        "question": "Who can join MANUU Connect?",
+        "answer": "Any CS/IT student enrolled at MANUU can join. Both beginners and experienced students are welcome."
+      },
+      {
+        "id": "faq_cost",
+        "question": "Does it cost anything to participate?",
+        "answer": "No. Participation in MANUU Connect activities such as hackathons, workshops, and other events is completely free for students."
+      },
+      {
+        "id": "faq_previous_project",
+        "question": "Can I submit a project I have already worked on?",
+        "answer": "Yes. Previous projects can be submitted when they are relevant to the event or challenge. Students should clearly mention previous work done on the project."
+      },
+      {
+        "id": "faq_hackathon_team_size",
+        "question": "What is the typical hackathon team size?",
+        "answer": "Teams generally consist of 2 to 4 members. Some events might allow solo participation. Students should check the rules of the specific event."
+      },
+      {
+        "id": "faq_resources",
+        "question": "Are resources provided for projects?",
+        "answer": "Yes. For hardware events, basic toolkits and components are provided. For software projects, required APIs, platforms, or cloud resources are made available when needed."
+      },
+      {
+        "id": "faq_remote",
+        "question": "Can I participate remotely?",
+        "answer": "Some events allow remote participation. Students should check the specific event guidelines for eligibility and virtual participation instructions."
+      },
+      {
+        "id": "faq_growth",
+        "question": "How does MANUU Connect help students grow?",
+        "answer": "MANUU Connect provides hands-on experience, mentor interaction, peer learning, real-world projects, technical skill development, soft-skill development, networking, internship preparation, research and career exposure, and leadership opportunities."
+      },
+      {
+        "id": "faq_support",
+        "question": "How can students get support?",
+        "answer": "Students can contact MANUU Connect through the website contact form, email, or WhatsApp channel. The community provides guidance, questions-and-answer support, and mentorship."
+      }
+    ]
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "type": "achievements",
+  "title": "Achievements",
+  "keywords": [
+    "achievement",
+    "AZAD IT EXPO",
+    "2nd position",
+    "award"
+  ],
+  "content": [
+    {
+      "id": "achievement_azad_it_expo_2025",
+      "name": "AZAD IT EXPO 2025",
+      "achievement": "MANUU Connect secured 2nd position.",
+      "organizer": "Department of CS & IT, Maulana Azad National Urdu University, Hyderabad",
+      "shared_through": "LinkedIn"
+    }
+  ]
+}

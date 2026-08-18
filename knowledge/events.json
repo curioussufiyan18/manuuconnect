@@ -1,0 +1,181 @@
+{
+  "type": "events",
+  "title": "MANUU Connect Events",
+  "keywords": [
+    "events",
+    "webinar",
+    "workshop",
+    "career",
+    "hackathon",
+    "latest event"
+  ],
+  "content": [
+    {
+      "id": "event_career_guidance_industry_awareness_2026",
+      "type": "event",
+      "title": "Career Guidance & Industry Awareness Program",
+      "date": "14/08/2026",
+      "participants": 248,
+      "topics": [
+        "IT Career Paths",
+        "Web Development",
+        "MERN",
+        ".NET",
+        "Mobile Development",
+        "Data Science",
+        "Cybersecurity",
+        "Software Engineering",
+        "Programming Fundamentals",
+        "Problem Solving",
+        "Data Structures & Algorithms",
+        "LeetCode",
+        "GeeksforGeeks",
+        "GitHub",
+        "Career Roadmap",
+        "Software Development Life Cycle",
+        "Backend Development",
+        "APIs",
+        "Databases",
+        "Application Architecture",
+        "Cloud Computing",
+        "AWS",
+        "DevOps",
+        "Deployment Pipelines",
+        "Scalability",
+        "High Availability",
+        "Modern Development Practices",
+        "Android Development",
+        "Industry Expectations",
+        "Real-World Projects",
+        "Practical Experience"
+      ],
+      "speakers": [
+        "Syed Mohd Zeeshan Ali",
+        "Mohd Waqar Hashim"
+      ]
+    },
+    {
+      "id": "event_summer_sprint_26",
+      "type": "event",
+      "title": "Summer Sprint '26: Learn, Build & Launch Your Career",
+      "date": "13/06/2026",
+      "participants": 42,
+      "topics": [
+        "Career Roadmapping",
+        "Goal Setting",
+        "Git",
+        "GitHub",
+        "Web Development",
+        "Frontend Development",
+        "Full-Stack Development",
+        "Data Structures and Algorithms",
+        "Cloud Computing",
+        "DevOps",
+        "Artificial Intelligence",
+        "Resume Building",
+        "LinkedIn Optimization",
+        "Interview Preparation",
+        "Project Development",
+        "Open Source",
+        "Freelancing",
+        "Internship Preparation",
+        "Team Collaboration"
+      ],
+      "speakers": [
+        "Dilshad Ashraf",
+        "MD. Ibrahim"
+      ]
+    },
+    {
+      "id": "event_next_gen_technologies_2026",
+      "type": "event",
+      "title": "Next-Gen Technologies: AI/ML, Generative AI, Agentic AI & Blockchain",
+      "date": "27/02/2026",
+      "participants": 80,
+      "topics": [
+        "Artificial Intelligence",
+        "Machine Learning",
+        "Deep Learning",
+        "Generative AI",
+        "Large Language Models",
+        "Agentic AI",
+        "Autonomous AI Systems",
+        "Prompt Engineering",
+        "Blockchain Technology",
+        "Smart Contracts",
+        "Web3",
+        "Decentralized Applications",
+        "AI in Industry",
+        "Future Tech Careers"
+      ],
+      "speakers": [
+        "Prof. (Dr.) Syed Imtiyaz Hassan",
+        "Mohd. Rashedin"
+      ]
+    },
+    {
+      "id": "event_git_github_workshop_2026",
+      "type": "event",
+      "title": "Getting Started with Git & GitHub: A Hands-On Workshop",
+      "date": "18/01/2026",
+      "participants": 71,
+      "topics": [
+        "Git",
+        "GitHub",
+        "Version Control",
+        "Git Installation",
+        "Git Workflow",
+        "Repository Management",
+        "Git Init",
+        "Git Status",
+        "Git Add",
+        "Git Commit",
+        "Git Push",
+        "Git Pull",
+        "Git Clone",
+        "Branching Basics",
+        "Forking",
+        "Pull Requests",
+        "Collaboration Workflow",
+        "Best Practices"
+      ],
+      "speakers": [
+        "Syed Mohd Zeeshan Ali",
+        "Md Nadeem Noori"
+      ]
+    },
+    {
+      "id": "event_getting_started_in_tech_2026",
+      "type": "event",
+      "title": "Getting Started in Tech: Coding, DSA & Career Paths",
+      "date": "04/01/2026",
+      "participants": 37,
+      "topics": [
+        "Introduction to Coding",
+        "How to Start Programming",
+        "Choosing Your First Programming Language",
+        "Basics of Computer Science",
+        "Understanding DSA",
+        "Importance of DSA in Interviews",
+        "What Is Development",
+        "Web Development",
+        "App Development",
+        "DSA vs Development",
+        "Career Paths in Tech",
+        "Software Engineering Roles",
+        "Frontend vs Backend vs Full Stack",
+        "Learning Roadmaps",
+        "Free Learning Resources",
+        "Common Beginner Mistakes",
+        "Balancing College and Coding",
+        "Building Consistency",
+        "Real-World Tech Insights",
+        "Q&A and Doubt Clearing"
+      ],
+      "speakers": [
+        "Hibbanur Rahman",
+        "Md Tauqueer Manzar"
+      ]
+    }
+  ]
+}
