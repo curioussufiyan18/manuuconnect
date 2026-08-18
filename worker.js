@@ -23,9 +23,9 @@ function normalize(text) {
     .trim();
 }
 
-/* -----------------------------
+/* ==============================
    STRUCTURED KNOWLEDGE
------------------------------ */
+============================== */
 
 function getRecords(category) {
   const data = knowledge?.[category];
@@ -34,11 +34,9 @@ function getRecords(category) {
     return [];
   }
 
-  if (Array.isArray(data.content)) {
-    return data.content;
-  }
-
-  return [];
+  return Array.isArray(data.content)
+    ? data.content
+    : [];
 }
 
 function getTeamRecords() {
@@ -70,14 +68,60 @@ function parseDate(dateString) {
   const month = Number(parts[1]);
   const year = Number(parts[2]);
 
-  const date = new Date(year, month - 1, day);
-
-  return date.getTime();
+  return new Date(
+    year,
+    month - 1,
+    day
+  ).getTime();
 }
 
-/* -----------------------------
-   STRUCTURED QUESTION DETECTION
------------------------------ */
+/* ==============================
+   ABOUT
+============================== */
+
+function getAboutAnswer(message) {
+  const q = normalize(message);
+
+  const isAboutQuestion =
+    q === "what is manuuconnect" ||
+    q === "what is manuu connect" ||
+    q.includes("tell me about manuuconnect") ||
+    q.includes("tell me about manuu connect") ||
+    q.includes("what does manuuconnect do") ||
+    q.includes("what does manuu connect do") ||
+    q.includes("what is the purpose of manuuconnect") ||
+    q.includes("what is the purpose of manuu connect");
+
+  if (!isAboutQuestion) {
+    return null;
+  }
+
+  const faq =
+    knowledge?.faq?.content || [];
+
+  const faqItem = faq.find(
+    item =>
+      normalize(item.question) ===
+      "what is manuu connect"
+  );
+
+  if (faqItem?.answer) {
+    return faqItem.answer;
+  }
+
+  const about =
+    knowledge?.about?.content;
+
+  if (about?.description) {
+    return about.description;
+  }
+
+  return null;
+}
+
+/* ==============================
+   TEAM
+============================== */
 
 function isMentorListQuestion(message) {
   const q = normalize(message);
@@ -115,7 +159,9 @@ function isTeamListQuestion(message) {
     q.includes("show all team members") ||
     q.includes("show the team members") ||
     q.includes("all team members") ||
-    q.includes("core team")
+    q.includes("all team") ||
+    q.includes("core team") ||
+    q.includes("complete team")
   );
 }
 
@@ -125,59 +171,60 @@ function isTeamCountQuestion(message) {
   return (
     q.includes("how many team members") ||
     q.includes("how many members are on the team") ||
-    q.includes("number of team members")
+    q.includes("number of team members") ||
+    q.includes("how many people are on the team")
   );
 }
 
-function isLatestEventQuestion(message) {
+function getTeamMemberAnswer(message) {
   const q = normalize(message);
+  const team = getTeamRecords();
 
-  return (
-    q.includes("latest event") ||
-    q.includes("latest events") ||
-    q.includes("most recent event") ||
-    q.includes("recent event") ||
-    q.includes("newest event") ||
-    q.includes("upcoming event")
-  );
-}
-
-/* -----------------------------
-   STRUCTURED ANSWERS
------------------------------ */
-
-function getMentorListAnswer() {
-  const mentors = getMentorRecords();
-
-  if (!mentors.length) {
+  if (!team.length) {
     return null;
   }
 
-  const lines = mentors.map((mentor, index) => {
-    const companyPart =
-      mentor.company
-        ? `, ${mentor.company}`
-        : mentor.organization
-        ? `, ${mentor.organization}`
-        : "";
+  const backendQuestion =
+    q.includes("backend developer") ||
+    q.includes("who handles backend") ||
+    q.includes("who does backend") ||
+    q.includes("who is the backend developer");
 
-    return `${index + 1}. ${mentor.name} - ${mentor.role}${companyPart}`;
-  });
+  if (backendQuestion) {
+    const member = team.find(
+      item =>
+        normalize(item.position) ===
+        "backend developer"
+    );
 
-  return (
-    `MANUUConnect has ${mentors.length} mentors/alumni in the current directory.\n\n` +
-    lines.join("\n")
-  );
-}
-
-function getMentorCountAnswer() {
-  const mentors = getMentorRecords();
-
-  if (!mentors.length) {
-    return null;
+    if (member) {
+      return `${member.name} is the Backend Developer.`;
+    }
   }
 
-  return `The current mentor directory contains ${mentors.length} mentors/alumni.`;
+  for (const member of team) {
+    const name = normalize(member.name);
+
+    if (
+      q === name ||
+      q.includes(name)
+    ) {
+      return `${member.name} is the ${member.position}.`;
+    }
+
+    for (const alias of member.aliases || []) {
+      const aliasName = normalize(alias);
+
+      if (
+        aliasName.length > 2 &&
+        q.includes(aliasName)
+      ) {
+        return `${member.name} is the ${member.position}.`;
+      }
+    }
+  }
+
+  return null;
 }
 
 function getTeamListAnswer() {
@@ -187,13 +234,14 @@ function getTeamListAnswer() {
     return null;
   }
 
-  const lines = team.map((member, index) => {
-    return `${index + 1}. ${member.name} - ${member.position}`;
-  });
-
   return (
-    `MANUUConnect has ${team.length} current team members.\n\n` +
-    lines.join("\n")
+    `MANUUConnect has ${team.length} current team members:\n\n` +
+    team
+      .map(
+        (member, index) =>
+          `${index + 1}. ${member.name} - ${member.position}`
+      )
+      .join("\n")
   );
 }
 
@@ -207,6 +255,76 @@ function getTeamCountAnswer() {
   return `The current team has ${team.length} members.`;
 }
 
+/* ==============================
+   MENTORS
+============================== */
+
+function getMentorListAnswer() {
+  const mentors = getMentorRecords();
+
+  if (!mentors.length) {
+    return null;
+  }
+
+  return (
+    `The current mentor directory contains ${mentors.length} mentors/alumni:\n\n` +
+    mentors
+      .map((mentor, index) => {
+        const organization =
+          mentor.company ||
+          mentor.organization ||
+          "";
+
+        const role =
+          mentor.role || "";
+
+        const suffix =
+          organization
+            ? ` - ${role} at ${organization}`
+            : ` - ${role}`;
+
+        return `${index + 1}. ${mentor.name}${suffix}`;
+      })
+      .join("\n")
+  );
+}
+
+function getMentorCountAnswer() {
+  const mentors = getMentorRecords();
+
+  if (!mentors.length) {
+    return null;
+  }
+
+  return `The current mentor directory contains ${mentors.length} mentors/alumni.`;
+}
+
+/* ==============================
+   EVENTS
+============================== */
+
+function isLatestEventQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("latest event") ||
+    q.includes("latest events") ||
+    q.includes("most recent event") ||
+    q.includes("recent event") ||
+    q.includes("newest event")
+  );
+}
+
+function isUpcomingEventQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("upcoming event") ||
+    q.includes("upcoming events") ||
+    q.includes("next event")
+  );
+}
+
 function getLatestEventAnswer() {
   const events = getEventRecords();
 
@@ -216,52 +334,197 @@ function getLatestEventAnswer() {
 
   const sorted = [...events].sort(
     (a, b) =>
-      parseDate(b.date) - parseDate(a.date)
+      parseDate(b.date) -
+      parseDate(a.date)
   );
 
   const latest = sorted[0];
 
-  return (
-    `The latest event in the current knowledge base is "${latest.title}".\n\n` +
-    `Date: ${latest.date}\n` +
-    `Participants: ${latest.participants}\n` +
-    `Speakers: ${latest.speakers.join(", ")}`
-  );
+  return formatEvent(latest);
 }
 
+function getUpcomingEventAnswer() {
+  const events = getEventRecords();
+
+  if (!events.length) {
+    return null;
+  }
+
+  const today = Date.now();
+
+  const upcoming = [...events]
+    .filter(
+      event =>
+        parseDate(event.date) >= today
+    )
+    .sort(
+      (a, b) =>
+        parseDate(a.date) -
+        parseDate(b.date)
+    );
+
+  if (!upcoming.length) {
+    return "I don't have an upcoming event in the current knowledge base.";
+  }
+
+  return formatEvent(upcoming[0]);
+}
+
+function getSpecificEventAnswer(message) {
+  const q = normalize(message);
+  const events = getEventRecords();
+
+  if (!events.length) {
+    return null;
+  }
+
+  const event =
+    events.find(item => {
+      const title =
+        normalize(item.title);
+
+      if (
+        q.includes(title)
+      ) {
+        return true;
+      }
+
+      if (
+        q.includes("summer sprint") &&
+        title.includes("summer sprint")
+      ) {
+        return true;
+      }
+
+      if (
+        q.includes("career guidance") &&
+        title.includes("career guidance")
+      ) {
+        return true;
+      }
+
+      if (
+        q.includes("git github") &&
+        title.includes("git github")
+      ) {
+        return true;
+      }
+
+      return false;
+    });
+
+  if (!event) {
+    return null;
+  }
+
+  return formatEvent(event);
+}
+
+function formatEvent(event) {
+  const lines = [
+    `${event.title}`,
+    ``,
+    `Date: ${event.date}`,
+    `Participants: ${event.participants}`,
+    `Speakers: ${event.speakers.join(", ")}`
+  ];
+
+  if (
+    Array.isArray(event.topics) &&
+    event.topics.length
+  ) {
+    lines.push("");
+    lines.push("Topics:");
+
+    for (const topic of event.topics) {
+      lines.push(`• ${topic}`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
+/* ==============================
+   STRUCTURED ROUTER
+============================== */
+
 function getStructuredAnswer(message) {
-  if (isMentorListQuestion(message)) {
-    return getMentorListAnswer();
+
+  const aboutAnswer =
+    getAboutAnswer(message);
+
+  if (aboutAnswer) {
+    return aboutAnswer;
   }
 
-  if (isMentorCountQuestion(message)) {
-    return getMentorCountAnswer();
+  const teamMemberAnswer =
+    getTeamMemberAnswer(message);
+
+  if (teamMemberAnswer) {
+    return teamMemberAnswer;
   }
 
-  if (isTeamListQuestion(message)) {
+  if (
+    isTeamListQuestion(message)
+  ) {
     return getTeamListAnswer();
   }
 
-  if (isTeamCountQuestion(message)) {
+  if (
+    isTeamCountQuestion(message)
+  ) {
     return getTeamCountAnswer();
   }
 
-  if (isLatestEventQuestion(message)) {
+  if (
+    isMentorListQuestion(message)
+  ) {
+    return getMentorListAnswer();
+  }
+
+  if (
+    isMentorCountQuestion(message)
+  ) {
+    return getMentorCountAnswer();
+  }
+
+  if (
+    isLatestEventQuestion(message)
+  ) {
     return getLatestEventAnswer();
+  }
+
+  if (
+    isUpcomingEventQuestion(message)
+  ) {
+    return getUpcomingEventAnswer();
+  }
+
+  const eventAnswer =
+    getSpecificEventAnswer(message);
+
+  if (eventAnswer) {
+    return eventAnswer;
   }
 
   return null;
 }
 
-/* -----------------------------
-   KNOWLEDGE → VECTOR RECORDS
------------------------------ */
+/* ==============================
+   VECTORIZE INDEXING
+============================== */
 
 function buildKnowledgeRecords() {
   const records = [];
 
-  for (const [category, data] of Object.entries(knowledge)) {
-    if (!data || typeof data !== "object") {
+  for (
+    const [category, data]
+    of Object.entries(knowledge)
+  ) {
+    if (
+      !data ||
+      typeof data !== "object"
+    ) {
       continue;
     }
 
@@ -275,37 +538,50 @@ function buildKnowledgeRecords() {
       data.content;
 
     if (Array.isArray(content)) {
-      content.forEach((item, index) => {
-        if (!item || typeof item !== "object") {
-          return;
+
+      content.forEach(
+        (item, index) => {
+
+          if (
+            !item ||
+            typeof item !== "object"
+          ) {
+            return;
+          }
+
+          const id =
+            item.id ||
+            `${category}-${index + 1}`;
+
+          const title =
+            item.title ||
+            item.name ||
+            item.question ||
+            categoryTitle;
+
+          const text = [
+            `Category: ${category}`,
+            `Type: ${item.type || categoryType}`,
+            `Title: ${title}`,
+            `Keywords: ${(data.keywords || []).join(", ")}`,
+            JSON.stringify(
+              item,
+              null,
+              2
+            )
+          ].join("\n");
+
+          records.push({
+            id,
+            category,
+            type:
+              item.type ||
+              categoryType,
+            title,
+            text
+          });
         }
-
-        const id =
-          item.id ||
-          `${category}-${index + 1}`;
-
-        const title =
-          item.title ||
-          item.name ||
-          item.question ||
-          categoryTitle;
-
-        const text = [
-          `Category: ${category}`,
-          `Type: ${item.type || categoryType}`,
-          `Title: ${title}`,
-          `Keywords: ${(data.keywords || []).join(", ")}`,
-          JSON.stringify(item, null, 2)
-        ].join("\n");
-
-        records.push({
-          id,
-          category,
-          type: item.type || categoryType,
-          title,
-          text
-        });
-      });
+      );
 
       continue;
     }
@@ -315,14 +591,26 @@ function buildKnowledgeRecords() {
       `Type: ${categoryType}`,
       `Title: ${categoryTitle}`,
       `Keywords: ${(data.keywords || []).join(", ")}`,
-      JSON.stringify(content, null, 2)
+      JSON.stringify(
+        content,
+        null,
+        2
+      )
     ].join("\n");
 
     records.push({
-      id: data.id || category,
+      id:
+        data.id ||
+        category,
+
       category,
-      type: categoryType,
-      title: categoryTitle,
+
+      type:
+        categoryType,
+
+      title:
+        categoryTitle,
+
       text
     });
   }
@@ -330,16 +618,28 @@ function buildKnowledgeRecords() {
   return records;
 }
 
-function splitForEmbedding(text, maxChars = 1800) {
-  if (text.length <= maxChars) {
+function splitForEmbedding(
+  text,
+  maxChars = 1800
+) {
+  if (
+    text.length <= maxChars
+  ) {
     return [text];
   }
 
   const chunks = [];
 
-  for (let i = 0; i < text.length; i += maxChars) {
+  for (
+    let i = 0;
+    i < text.length;
+    i += maxChars
+  ) {
     chunks.push(
-      text.slice(i, i + maxChars)
+      text.slice(
+        i,
+        i + maxChars
+      )
     );
   }
 
@@ -352,33 +652,45 @@ function buildEmbeddingRecords() {
 
   const output = [];
 
-  for (const record of sourceRecords) {
+  for (
+    const record of sourceRecords
+  ) {
     const chunks =
-      splitForEmbedding(record.text);
+      splitForEmbedding(
+        record.text
+      );
 
-    chunks.forEach((chunk, index) => {
-      output.push({
-        id:
-          chunks.length === 1
-            ? record.id
-            : `${record.id}-chunk-${index + 1}`,
+    chunks.forEach(
+      (chunk, index) => {
 
-        category: record.category,
-        type: record.type,
-        title: record.title,
-        text: chunk
-      });
-    });
+        output.push({
+          id:
+            chunks.length === 1
+              ? record.id
+              : `${record.id}-chunk-${index + 1}`,
+
+          category:
+            record.category,
+
+          type:
+            record.type,
+
+          title:
+            record.title,
+
+          text:
+            chunk
+        });
+
+      }
+    );
   }
 
   return output;
 }
 
-/* -----------------------------
-   VECTORIZE INDEXING
------------------------------ */
-
 async function indexKnowledge(env) {
+
   const records =
     buildEmbeddingRecords();
 
@@ -388,105 +700,157 @@ async function indexKnowledge(env) {
     );
   }
 
-  const texts =
-    records.map(record => record.text);
-
-  const embeddings =
-    await env.AI.run(
-      EMBEDDING_MODEL,
-      {
-        text: texts
-      }
-    );
-
-  if (
-    !embeddings ||
-    !Array.isArray(embeddings.data)
-  ) {
-    throw new Error(
-      "Embedding generation failed."
-    );
-  }
-
-  const vectors =
-    records.map((record, index) => ({
-      id: record.id,
-      values: embeddings.data[index],
-      metadata: {
-        category: record.category,
-        type: record.type,
-        title: record.title,
-        text: record.text
-      }
-    }));
+  /*
+    Process embeddings in batches.
+  */
 
   const batchSize = 50;
   const results = [];
 
   for (
-    let i = 0;
-    i < vectors.length;
-    i += batchSize
+    let start = 0;
+    start < records.length;
+    start += batchSize
   ) {
+
     const batch =
-      vectors.slice(
-        i,
-        i + batchSize
+      records.slice(
+        start,
+        start + batchSize
+      );
+
+    const embeddings =
+      await env.AI.run(
+        EMBEDDING_MODEL,
+        {
+          text:
+            batch.map(
+              record =>
+                record.text
+            )
+        }
+      );
+
+    if (
+      !embeddings ||
+      !Array.isArray(
+        embeddings.data
+      )
+    ) {
+      throw new Error(
+        "Embedding generation failed."
+      );
+    }
+
+    const vectors =
+      batch.map(
+        (record, index) => ({
+          id: record.id,
+
+          values:
+            embeddings.data[index],
+
+          metadata: {
+            category:
+              record.category,
+
+            type:
+              record.type,
+
+            title:
+              record.title,
+
+            text:
+              record.text
+          }
+        })
       );
 
     const result =
-      await env.VECTORIZE.upsert(batch);
+      await env.VECTORIZE.upsert(
+        vectors
+      );
 
     results.push(result);
   }
 
   return {
-    records: records.length,
-    batches: results.length,
+    records:
+      records.length,
+
+    batches:
+      results.length,
+
     results
   };
 }
 
-/* -----------------------------
+/* ==============================
    VECTOR SEARCH
------------------------------ */
+============================== */
 
-async function searchVectorize(query, env) {
-  const embedding =
-    await env.AI.run(
-      EMBEDDING_MODEL,
-      {
-        text: [query]
-      }
+async function searchVectorize(
+  query,
+  env
+) {
+  try {
+
+    const embedding =
+      await env.AI.run(
+        EMBEDDING_MODEL,
+        {
+          text: [query]
+        }
+      );
+
+    const queryVector =
+      embedding?.data?.[0];
+
+    if (!queryVector) {
+      console.error(
+        "No query embedding returned."
+      );
+
+      return [];
+    }
+
+    const result =
+      await env.VECTORIZE.query(
+        queryVector,
+        {
+          topK: 8,
+          returnMetadata:
+            "all"
+        }
+      );
+
+    return (
+      result?.matches || []
     );
 
-  const queryVector =
-    embedding?.data?.[0];
+  } catch (error) {
 
-  if (!queryVector) {
-    throw new Error(
-      "Failed to generate query embedding."
+    console.error(
+      "Vectorize search failed:",
+      error
     );
+
+    return [];
   }
-
-  const result =
-    await env.VECTORIZE.query(
-      queryVector,
-      {
-        topK: 8,
-        returnMetadata: "all"
-      }
-    );
-
-  return result?.matches || [];
 }
 
-/* -----------------------------
-   SERPER FALLBACK
------------------------------ */
+/* ==============================
+   SERPER
+============================== */
 
-async function searchSerper(query, env, site) {
-  if (!env.SERPER_API_KEY) {
+async function searchSerper(
+  query,
+  env,
+  site
+) {
+  if (
+    !env.SERPER_API_KEY
+  ) {
     return [];
   }
 
@@ -494,6 +858,7 @@ async function searchSerper(query, env, site) {
     `site:${site} ${query}`;
 
   try {
+
     const response =
       await fetch(
         "https://google.serper.dev/search",
@@ -503,20 +868,31 @@ async function searchSerper(query, env, site) {
           headers: {
             "X-API-KEY":
               env.SERPER_API_KEY,
+
             "Content-Type":
               "application/json"
           },
 
-          body: JSON.stringify({
-            q: searchQuery,
-            gl: "in",
-            hl: "en",
-            num: 5
-          })
+          body:
+            JSON.stringify({
+              q:
+                searchQuery,
+
+              gl:
+                "in",
+
+              hl:
+                "en",
+
+              num:
+                5
+            })
         }
       );
 
-    if (!response.ok) {
+    if (
+      !response.ok
+    ) {
       return [];
     }
 
@@ -525,16 +901,28 @@ async function searchSerper(query, env, site) {
 
     return (
       data.organic || []
-    ).map(item => ({
-      title:
-        item.title || "",
-      link:
-        item.link || "",
-      snippet:
-        item.snippet || ""
-    }));
+    ).map(
+      item => ({
+        title:
+          item.title || "",
 
-  } catch {
+        link:
+          item.link || "",
+
+        snippet:
+          item.snippet || ""
+      })
+    );
+
+  } catch (
+    error
+  ) {
+
+    console.error(
+      "Serper failed:",
+      error
+    );
+
     return [];
   }
 }
@@ -554,9 +942,9 @@ Snippet: ${item.snippet}`
     .join("\n\n");
 }
 
-/* -----------------------------
+/* ==============================
    GREETINGS
------------------------------ */
+============================== */
 
 function isGreeting(message) {
   const q =
@@ -584,7 +972,9 @@ function isGreeting(message) {
   ].includes(q);
 }
 
-function greetingResponse(message) {
+function greetingResponse(
+  message
+) {
   const q =
     normalize(message);
 
@@ -598,51 +988,84 @@ function greetingResponse(message) {
   return "Hi! 👋 How can I help you with MANUUConnect?";
 }
 
-/* -----------------------------
+/* ==============================
    WORKER
------------------------------ */
+============================== */
 
 export default {
-  async fetch(request, env) {
+
+  async fetch(
+    request,
+    env
+  ) {
+
+    /*
+      CORS
+    */
 
     if (
-      request.method === "OPTIONS"
+      request.method ===
+      "OPTIONS"
     ) {
-      return new Response(null, {
-        status: 204,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods":
-            "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers":
-            "Content-Type"
+      return new Response(
+        null,
+        {
+          status: 204,
+
+          headers: {
+            "Access-Control-Allow-Origin":
+              "*",
+
+            "Access-Control-Allow-Methods":
+              "GET, POST, OPTIONS",
+
+            "Access-Control-Allow-Headers":
+              "Content-Type"
+          }
         }
-      });
+      );
     }
+
+    /*
+      GET
+    */
 
     if (
       request.method === "GET"
     ) {
+
       const url =
-        new URL(request.url);
+        new URL(
+          request.url
+        );
 
       /*
-        Temporary indexing endpoint.
+        Temporary indexing route.
       */
 
       if (
-        url.pathname === "/index"
+        url.pathname ===
+        "/index"
       ) {
+
         try {
+
           const result =
-            await indexKnowledge(env);
+            await indexKnowledge(
+              env
+            );
 
           return jsonResponse({
-            status: "indexed",
+            status:
+              "indexed",
+
             ...result
           });
 
-        } catch (error) {
+        } catch (
+          error
+        ) {
+
           console.error(
             "Indexing error:",
             error
@@ -660,13 +1083,23 @@ export default {
       }
 
       return jsonResponse({
-        status: "ok",
-        service: "MANUUConnect AI",
-        model: MODEL,
+        status:
+          "ok",
+
+        service:
+          "MANUUConnect AI",
+
+        model:
+          MODEL,
+
         embeddingModel:
           EMBEDDING_MODEL
       });
     }
+
+    /*
+      POST
+    */
 
     if (
       request.method !== "POST"
@@ -681,6 +1114,7 @@ export default {
     }
 
     try {
+
       const body =
         await request.json();
 
@@ -689,7 +1123,8 @@ export default {
 
       if (
         !message ||
-        typeof message !== "string"
+        typeof message !==
+          "string"
       ) {
         return jsonResponse(
           {
@@ -703,7 +1138,9 @@ export default {
       const cleanMessage =
         message.trim();
 
-      if (!cleanMessage) {
+      if (
+        !cleanMessage
+      ) {
         return jsonResponse(
           {
             error:
@@ -713,8 +1150,21 @@ export default {
         );
       }
 
+      if (
+        cleanMessage.length >
+        1000
+      ) {
+        return jsonResponse(
+          {
+            error:
+              "Message is too long."
+          },
+          400
+        );
+      }
+
       /*
-        Greeting
+        Greetings do not use AI.
       */
 
       if (
@@ -727,13 +1177,14 @@ export default {
             greetingResponse(
               cleanMessage
             ),
-          source: null
+
+          source:
+            null
         });
       }
 
       /*
-        FIRST:
-        Structured questions.
+        1. Structured answer.
       */
 
       const structuredAnswer =
@@ -741,18 +1192,20 @@ export default {
           cleanMessage
         );
 
-      if (structuredAnswer) {
+      if (
+        structuredAnswer
+      ) {
         return jsonResponse({
           reply:
             structuredAnswer,
+
           source:
             "MANUUConnect knowledge"
         });
       }
 
       /*
-        SECOND:
-        Vectorize semantic search.
+        2. Vectorize.
       */
 
       const matches =
@@ -768,21 +1221,28 @@ export default {
         0.55;
 
       const strongMatches =
-        bestScore >= VECTOR_THRESHOLD
+        bestScore >=
+        VECTOR_THRESHOLD
           ? matches
           : [];
 
-      let context = "";
-      let source = null;
+      let context =
+        "";
+
+      let source =
+        null;
 
       if (
-        strongMatches.length > 0
+        strongMatches.length
       ) {
+
         context =
           strongMatches
             .map(match => {
+
               const metadata =
-                match.metadata || {};
+                match.metadata ||
+                {};
 
               return `[MANUUConnect Knowledge]
 Category: ${metadata.category || ""}
@@ -790,20 +1250,23 @@ Type: ${metadata.type || ""}
 Title: ${metadata.title || ""}
 
 ${metadata.text || ""}`;
+
             })
-            .join("\n\n");
+            .join(
+              "\n\n"
+            );
 
         source =
           "MANUUConnect knowledge";
       }
 
       /*
-        THIRD:
-        Official website fallback.
+        3. Website fallback.
       */
 
       if (!context) {
-        const websiteResults =
+
+        const results =
           await searchSerper(
             cleanMessage,
             env,
@@ -811,14 +1274,16 @@ ${metadata.text || ""}`;
           );
 
         if (
-          websiteResults.length > 0
+          results.length
         ) {
-          context = `
+
+          context =
+            `
 Trusted external source:
 manuuconnect.in
 
 ${formatWebResults(
-  websiteResults,
+  results,
   "manuuconnect.in"
 )}
 `;
@@ -829,12 +1294,12 @@ ${formatWebResults(
       }
 
       /*
-        FOURTH:
-        LinkedIn fallback.
+        4. LinkedIn fallback.
       */
 
       if (!context) {
-        const linkedinResults =
+
+        const results =
           await searchSerper(
             `MANUUConnect ${cleanMessage}`,
             env,
@@ -842,14 +1307,16 @@ ${formatWebResults(
           );
 
         if (
-          linkedinResults.length > 0
+          results.length
         ) {
-          context = `
+
+          context =
+            `
 Trusted external source:
 LinkedIn
 
 ${formatWebResults(
-  linkedinResults,
+  results,
   "LinkedIn"
 )}
 `;
@@ -860,63 +1327,78 @@ ${formatWebResults(
       }
 
       /*
-        Nothing found.
+        5. Nothing found.
       */
 
       if (!context) {
-        context = `
-No reliable MANUUConnect information
-was found for this question.
+
+        context =
+          `
+No reliable MANUUConnect
+information was found.
 `;
       }
 
       /*
-        AI
+        6. AI
       */
 
-      const systemPrompt = `
+      const systemPrompt =
+        `
 You are MANUUConnect AI.
 
-You answer questions about:
+You are the assistant for
+the MANUUConnect community.
+
+You help with:
+
 - MANUUConnect
-- team members
-- mentors
-- alumni
-- events
-- projects
-- achievements
-- internships
-- referrals
+- Team members
+- Mentors
+- Alumni
+- Events
+- Projects
+- Achievements
+- Internships
+- Referrals
 - FAQs
-- student guidance
-- learning and career guidance
+- Student guidance
+- Learning guidance
+- Career guidance
 
 Use the provided information.
 
-For MANUUConnect facts, do not invent information.
+For MANUUConnect facts,
+do not invent facts.
 
-If reliable MANUUConnect information is unavailable,
-say:
+If reliable information
+is not available, say:
 
 "I don't have that information yet."
 
-For general student guidance, you may give useful
-general advice.
+Normal conversation is allowed.
 
-Keep answers short and clear.
+For general student guidance,
+you may give useful advice.
+
+Keep answers short.
 
 Use short paragraphs.
 
-Use bullet points or numbered lists when useful.
+Use bullet points or numbered
+lists when useful.
 
-Leave blank lines between separate sections.
+Leave blank lines between
+separate sections.
 
-Do not repeat the user's question.
+Do not repeat the question.
 
 USER QUESTION:
+
 ${cleanMessage}
 
 RETRIEVED INFORMATION:
+
 ${context}
 `;
 
@@ -926,17 +1408,24 @@ ${context}
           {
             messages: [
               {
-                role: "system",
+                role:
+                  "system",
+
                 content:
                   systemPrompt
               },
+
               {
-                role: "user",
+                role:
+                  "user",
+
                 content:
                   cleanMessage
               }
             ],
-            max_tokens: 300
+
+            max_tokens:
+              300
           }
         );
 
@@ -951,7 +1440,9 @@ ${context}
           bestScore || null
       });
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
       console.error(
         "MANUUConnect error:",
