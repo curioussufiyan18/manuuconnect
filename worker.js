@@ -24,7 +24,7 @@ function normalize(text) {
 }
 
 /* ==============================
-   STRUCTURED KNOWLEDGE
+   KNOWLEDGE HELPERS
 ============================== */
 
 function getRecords(category) {
@@ -40,9 +40,7 @@ function getRecords(category) {
 }
 
 function getTeamRecords() {
-  return getRecords("team").filter(
-    item => item?.type === "team_member"
-  );
+  return getRecords("team");
 }
 
 function getMentorRecords() {
@@ -68,11 +66,13 @@ function parseDate(dateString) {
   const month = Number(parts[1]);
   const year = Number(parts[2]);
 
-  return new Date(
+  const date = new Date(
     year,
     month - 1,
     day
-  ).getTime();
+  );
+
+  return date.getTime();
 }
 
 /* ==============================
@@ -123,35 +123,12 @@ function getAboutAnswer(message) {
    TEAM
 ============================== */
 
-function isMentorListQuestion(message) {
-  const q = normalize(message);
-
-  return (
-    q.includes("who are the mentors") ||
-    q.includes("list all mentors") ||
-    q.includes("list the mentors") ||
-    q.includes("show all mentors") ||
-    q.includes("show the mentors") ||
-    q.includes("all mentors") ||
-    q.includes("mentor list") ||
-    q.includes("mentor network")
-  );
-}
-
-function isMentorCountQuestion(message) {
-  const q = normalize(message);
-
-  return (
-    q.includes("how many mentors") ||
-    q.includes("number of mentors")
-  );
-}
-
 function isTeamListQuestion(message) {
   const q = normalize(message);
 
   return (
     q.includes("who are the team members") ||
+    q.includes("who are all the team members") ||
     q.includes("who is on the team") ||
     q.includes("who are on the team") ||
     q.includes("list all team members") ||
@@ -160,6 +137,12 @@ function isTeamListQuestion(message) {
     q.includes("show the team members") ||
     q.includes("all team members") ||
     q.includes("all team") ||
+    q === "team members" ||
+    q === "team member" ||
+    q === "about team" ||
+    q === "about the team" ||
+    q.includes("tell me about the team") ||
+    q.includes("tell me about team") ||
     q.includes("core team") ||
     q.includes("complete team")
   );
@@ -172,7 +155,33 @@ function isTeamCountQuestion(message) {
     q.includes("how many team members") ||
     q.includes("how many members are on the team") ||
     q.includes("number of team members") ||
-    q.includes("how many people are on the team")
+    q.includes("how many people are on the team") ||
+    q.includes("how many people in the team") ||
+    q === "how many members"
+  );
+}
+
+function getTeamOverviewAnswer(message) {
+  const q = normalize(message);
+
+  if (
+    q !== "about team" &&
+    q !== "about the team" &&
+    !q.includes("tell me about the team") &&
+    !q.includes("tell me about team")
+  ) {
+    return null;
+  }
+
+  const team = getTeamRecords();
+
+  if (!team.length) {
+    return null;
+  }
+
+  return (
+    `MANUUConnect's current team has ${team.length} members.\n\n` +
+    `The team includes developers, design, social media, coordination, and Tech & AI roles.`
   );
 }
 
@@ -259,6 +268,32 @@ function getTeamCountAnswer() {
    MENTORS
 ============================== */
 
+function isMentorListQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("who are the mentors") ||
+    q.includes("who are all the mentors") ||
+    q.includes("list all mentors") ||
+    q.includes("list the mentors") ||
+    q.includes("show all mentors") ||
+    q.includes("show the mentors") ||
+    q.includes("all mentors") ||
+    q === "mentors" ||
+    q === "mentor list" ||
+    q.includes("mentor network")
+  );
+}
+
+function isMentorCountQuestion(message) {
+  const q = normalize(message);
+
+  return (
+    q.includes("how many mentors") ||
+    q.includes("number of mentors")
+  );
+}
+
 function getMentorListAnswer() {
   const mentors = getMentorRecords();
 
@@ -278,10 +313,9 @@ function getMentorListAnswer() {
         const role =
           mentor.role || "";
 
-        const suffix =
-          organization
-            ? ` - ${role} at ${organization}`
-            : ` - ${role}`;
+        const suffix = organization
+          ? ` - ${role} at ${organization}`
+          : ` - ${role}`;
 
         return `${index + 1}. ${mentor.name}${suffix}`;
       })
@@ -338,9 +372,7 @@ function getLatestEventAnswer() {
       parseDate(a.date)
   );
 
-  const latest = sorted[0];
-
-  return formatEvent(latest);
+  return formatEvent(sorted[0]);
 }
 
 function getUpcomingEventAnswer() {
@@ -350,13 +382,10 @@ function getUpcomingEventAnswer() {
     return null;
   }
 
-  const today = Date.now();
+  const now = Date.now();
 
   const upcoming = [...events]
-    .filter(
-      event =>
-        parseDate(event.date) >= today
-    )
+    .filter(event => parseDate(event.date) >= now)
     .sort(
       (a, b) =>
         parseDate(a.date) -
@@ -378,40 +407,43 @@ function getSpecificEventAnswer(message) {
     return null;
   }
 
-  const event =
-    events.find(item => {
-      const title =
-        normalize(item.title);
+  const event = events.find(item => {
+    const title = normalize(item.title);
 
-      if (
-        q.includes(title)
-      ) {
-        return true;
-      }
+    if (q.includes(title)) {
+      return true;
+    }
 
-      if (
-        q.includes("summer sprint") &&
-        title.includes("summer sprint")
-      ) {
-        return true;
-      }
+    if (
+      q.includes("summer sprint") &&
+      title.includes("summer sprint")
+    ) {
+      return true;
+    }
 
-      if (
-        q.includes("career guidance") &&
-        title.includes("career guidance")
-      ) {
-        return true;
-      }
+    if (
+      q.includes("career guidance") &&
+      title.includes("career guidance")
+    ) {
+      return true;
+    }
 
-      if (
-        q.includes("git github") &&
-        title.includes("git github")
-      ) {
-        return true;
-      }
+    if (
+      q.includes("git github") &&
+      title.includes("git github")
+    ) {
+      return true;
+    }
 
-      return false;
-    });
+    if (
+      q.includes("next gen") &&
+      title.includes("next gen")
+    ) {
+      return true;
+    }
+
+    return false;
+  });
 
   if (!event) {
     return null;
@@ -423,7 +455,7 @@ function getSpecificEventAnswer(message) {
 function formatEvent(event) {
   const lines = [
     `${event.title}`,
-    ``,
+    "",
     `Date: ${event.date}`,
     `Participants: ${event.participants}`,
     `Speakers: ${event.speakers.join(", ")}`
@@ -449,6 +481,12 @@ function formatEvent(event) {
 ============================== */
 
 function getStructuredAnswer(message) {
+  const teamOverview =
+    getTeamOverviewAnswer(message);
+
+  if (teamOverview) {
+    return teamOverview;
+  }
 
   const aboutAnswer =
     getAboutAnswer(message);
@@ -464,39 +502,27 @@ function getStructuredAnswer(message) {
     return teamMemberAnswer;
   }
 
-  if (
-    isTeamListQuestion(message)
-  ) {
+  if (isTeamListQuestion(message)) {
     return getTeamListAnswer();
   }
 
-  if (
-    isTeamCountQuestion(message)
-  ) {
+  if (isTeamCountQuestion(message)) {
     return getTeamCountAnswer();
   }
 
-  if (
-    isMentorListQuestion(message)
-  ) {
+  if (isMentorListQuestion(message)) {
     return getMentorListAnswer();
   }
 
-  if (
-    isMentorCountQuestion(message)
-  ) {
+  if (isMentorCountQuestion(message)) {
     return getMentorCountAnswer();
   }
 
-  if (
-    isLatestEventQuestion(message)
-  ) {
+  if (isLatestEventQuestion(message)) {
     return getLatestEventAnswer();
   }
 
-  if (
-    isUpcomingEventQuestion(message)
-  ) {
+  if (isUpcomingEventQuestion(message)) {
     return getUpcomingEventAnswer();
   }
 
@@ -511,7 +537,7 @@ function getStructuredAnswer(message) {
 }
 
 /* ==============================
-   VECTORIZE INDEXING
+   VECTORIZE
 ============================== */
 
 function buildKnowledgeRecords() {
@@ -538,10 +564,8 @@ function buildKnowledgeRecords() {
       data.content;
 
     if (Array.isArray(content)) {
-
       content.forEach(
         (item, index) => {
-
           if (
             !item ||
             typeof item !== "object"
@@ -564,11 +588,7 @@ function buildKnowledgeRecords() {
             `Type: ${item.type || categoryType}`,
             `Title: ${title}`,
             `Keywords: ${(data.keywords || []).join(", ")}`,
-            JSON.stringify(
-              item,
-              null,
-              2
-            )
+            JSON.stringify(item, null, 2)
           ].join("\n");
 
           records.push({
@@ -662,7 +682,6 @@ function buildEmbeddingRecords() {
 
     chunks.forEach(
       (chunk, index) => {
-
         output.push({
           id:
             chunks.length === 1
@@ -681,7 +700,6 @@ function buildEmbeddingRecords() {
           text:
             chunk
         });
-
       }
     );
   }
@@ -690,7 +708,6 @@ function buildEmbeddingRecords() {
 }
 
 async function indexKnowledge(env) {
-
   const records =
     buildEmbeddingRecords();
 
@@ -700,10 +717,6 @@ async function indexKnowledge(env) {
     );
   }
 
-  /*
-    Process embeddings in batches.
-  */
-
   const batchSize = 50;
   const results = [];
 
@@ -712,7 +725,6 @@ async function indexKnowledge(env) {
     start < records.length;
     start += batchSize
   ) {
-
     const batch =
       records.slice(
         start,
@@ -745,7 +757,8 @@ async function indexKnowledge(env) {
     const vectors =
       batch.map(
         (record, index) => ({
-          id: record.id,
+          id:
+            record.id,
 
           values:
             embeddings.data[index],
@@ -785,16 +798,11 @@ async function indexKnowledge(env) {
   };
 }
 
-/* ==============================
-   VECTOR SEARCH
-============================== */
-
 async function searchVectorize(
   query,
   env
 ) {
   try {
-
     const embedding =
       await env.AI.run(
         EMBEDDING_MODEL,
@@ -825,11 +833,10 @@ async function searchVectorize(
       );
 
     return (
-      result?.matches || []
+      result?.matches ||
+      []
     );
-
   } catch (error) {
-
     console.error(
       "Vectorize search failed:",
       error
@@ -840,7 +847,7 @@ async function searchVectorize(
 }
 
 /* ==============================
-   SERPER
+   SERPER FALLBACK
 ============================== */
 
 async function searchSerper(
@@ -858,7 +865,6 @@ async function searchSerper(
     `site:${site} ${query}`;
 
   try {
-
     const response =
       await fetch(
         "https://google.serper.dev/search",
@@ -893,6 +899,11 @@ async function searchSerper(
     if (
       !response.ok
     ) {
+      console.error(
+        "Serper returned:",
+        response.status
+      );
+
       return [];
     }
 
@@ -900,7 +911,8 @@ async function searchSerper(
       await response.json();
 
     return (
-      data.organic || []
+      data.organic ||
+      []
     ).map(
       item => ({
         title:
@@ -913,13 +925,9 @@ async function searchSerper(
           item.snippet || ""
       })
     );
-
-  } catch (
-    error
-  ) {
-
+  } catch (error) {
     console.error(
-      "Serper failed:",
+      "Serper search failed:",
       error
     );
 
@@ -972,9 +980,7 @@ function isGreeting(message) {
   ].includes(q);
 }
 
-function greetingResponse(
-  message
-) {
+function greetingResponse(message) {
   const q =
     normalize(message);
 
@@ -993,15 +999,11 @@ function greetingResponse(
 ============================== */
 
 export default {
-
   async fetch(
     request,
     env
   ) {
-
-    /*
-      CORS
-    */
+    /* CORS */
 
     if (
       request.method ===
@@ -1026,14 +1028,11 @@ export default {
       );
     }
 
-    /*
-      GET
-    */
+    /* GET */
 
     if (
       request.method === "GET"
     ) {
-
       const url =
         new URL(
           request.url
@@ -1047,9 +1046,7 @@ export default {
         url.pathname ===
         "/index"
       ) {
-
         try {
-
           const result =
             await indexKnowledge(
               env
@@ -1061,11 +1058,7 @@ export default {
 
             ...result
           });
-
-        } catch (
-          error
-        ) {
-
+        } catch (error) {
           console.error(
             "Indexing error:",
             error
@@ -1097,9 +1090,7 @@ export default {
       });
     }
 
-    /*
-      POST
-    */
+    /* POST */
 
     if (
       request.method !== "POST"
@@ -1114,7 +1105,6 @@ export default {
     }
 
     try {
-
       const body =
         await request.json();
 
@@ -1163,9 +1153,7 @@ export default {
         );
       }
 
-      /*
-        Greetings do not use AI.
-      */
+      /* Greeting */
 
       if (
         isGreeting(
@@ -1184,7 +1172,9 @@ export default {
       }
 
       /*
-        1. Structured answer.
+        Structured answer FIRST.
+        These questions should never depend
+        on Vectorize.
       */
 
       const structuredAnswer =
@@ -1205,7 +1195,7 @@ export default {
       }
 
       /*
-        2. Vectorize.
+        Semantic Vectorize search.
       */
 
       const matches =
@@ -1215,7 +1205,8 @@ export default {
         );
 
       const bestScore =
-        matches[0]?.score || 0;
+        matches[0]?.score ||
+        0;
 
       const VECTOR_THRESHOLD =
         0.55;
@@ -1235,23 +1226,22 @@ export default {
       if (
         strongMatches.length
       ) {
-
         context =
           strongMatches
-            .map(match => {
+            .map(
+              match => {
+                const metadata =
+                  match.metadata ||
+                  {};
 
-              const metadata =
-                match.metadata ||
-                {};
-
-              return `[MANUUConnect Knowledge]
+                return `[MANUUConnect Knowledge]
 Category: ${metadata.category || ""}
 Type: ${metadata.type || ""}
 Title: ${metadata.title || ""}
 
 ${metadata.text || ""}`;
-
-            })
+              }
+            )
             .join(
               "\n\n"
             );
@@ -1261,11 +1251,10 @@ ${metadata.text || ""}`;
       }
 
       /*
-        3. Website fallback.
+        Website fallback.
       */
 
       if (!context) {
-
         const results =
           await searchSerper(
             cleanMessage,
@@ -1276,7 +1265,6 @@ ${metadata.text || ""}`;
         if (
           results.length
         ) {
-
           context =
             `
 Trusted external source:
@@ -1294,11 +1282,10 @@ ${formatWebResults(
       }
 
       /*
-        4. LinkedIn fallback.
+        LinkedIn fallback.
       */
 
       if (!context) {
-
         const results =
           await searchSerper(
             `MANUUConnect ${cleanMessage}`,
@@ -1309,7 +1296,6 @@ ${formatWebResults(
         if (
           results.length
         ) {
-
           context =
             `
 Trusted external source:
@@ -1327,11 +1313,10 @@ ${formatWebResults(
       }
 
       /*
-        5. Nothing found.
+        Nothing found.
       */
 
       if (!context) {
-
         context =
           `
 No reliable MANUUConnect
@@ -1340,15 +1325,15 @@ information was found.
       }
 
       /*
-        6. AI
+        AI fallback.
       */
 
       const systemPrompt =
         `
 You are MANUUConnect AI.
 
-You are the assistant for
-the MANUUConnect community.
+You are the assistant for the
+MANUUConnect community.
 
 You help with:
 
@@ -1379,7 +1364,7 @@ is not available, say:
 Normal conversation is allowed.
 
 For general student guidance,
-you may give useful advice.
+you may provide useful advice.
 
 Keep answers short.
 
@@ -1435,15 +1420,15 @@ ${context}
 
       return jsonResponse({
         reply,
+
         source,
+
         vectorScore:
-          bestScore || null
+          bestScore ||
+          null
       });
 
-    } catch (
-      error
-    ) {
-
+    } catch (error) {
       console.error(
         "MANUUConnect error:",
         error
