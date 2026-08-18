@@ -1,6 +1,7 @@
 import { knowledge } from "./knowledge.js";
 
 const MODEL = "@cf/meta/llama-3.2-3b-instruct";
+const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
 
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -23,233 +24,327 @@ function normalize(text) {
 }
 
 /*
-  Turn the knowledge into searchable records.
+  Convert the new knowledge structure into searchable records.
 */
-function flattenKnowledge(value, source = "", results = []) {
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      if (
-        item &&
-        typeof item === "object" &&
-        !Array.isArray(item)
-      ) {
-        results.push({
-          source,
-          content: item
-        });
-      } else {
-        flattenKnowledge(item, source, results);
-      }
+function buildKnowledgeRecords() {
+  const records = [];
+
+  for (const [category, data] of Object.entries(knowledge)) {
+    if (!data || typeof data !== "object") {
+      continue;
     }
 
-    return results;
-  }
+    const categoryType =
+      data.type || category;
 
-  if (value && typeof value === "object") {
-    for (const [key, child] of Object.entries(value)) {
-      const nextSource = source
-        ? `${source}.${key}`
-        : key;
+    const categoryTitle =
+      data.title || category;
 
-      if (
-        child &&
-        typeof child === "object" &&
-        !Array.isArray(child)
-      ) {
-        results.push({
-          source: nextSource,
-          content: child
+    const content =
+      data.content;
+
+    if (Array.isArray(content)) {
+      content.forEach((item, index) => {
+        if (!item || typeof item !== "object") {
+          return;
+        }
+
+        const id =
+          item.id ||
+          `${category}-${index + 1}`;
+
+        const title =
+          item.title ||
+          item.name ||
+          item.question ||
+          categoryTitle;
+
+        const text = [
+          `Category: ${category}`,
+          `Type: ${item.type || categoryType}`,
+          `Title: ${title}`,
+          `Keywords: ${(data.keywords || []).join(", ")}`,
+          JSON.stringify(item, null, 2)
+        ].join("\n");
+
+        records.push({
+          id,
+          category,
+          type: item.type || categoryType,
+          title,
+          text
         });
+      });
 
-        flattenKnowledge(
-          child,
-          nextSource,
-          results
-        );
-      } else {
-        results.push({
-          source: nextSource,
-          content: child
-        });
-      }
+      continue;
     }
 
-    return results;
-  }
+    const text = [
+      `Category: ${category}`,
+      `Type: ${categoryType}`,
+      `Title: ${categoryTitle}`,
+      `Keywords: ${(data.keywords || []).join(", ")}`,
+      JSON.stringify(content, null, 2)
+    ].join("\n");
 
-  if (value !== null && value !== undefined) {
-    results.push({
-      source,
-      content: value
+    records.push({
+      id: data.id || category,
+      category,
+      type: categoryType,
+      title: categoryTitle,
+      text
     });
   }
 
-  return results;
+  return records;
 }
 
-const knowledgeIndex = flattenKnowledge(knowledge);
+function splitForEmbedding(text, maxChars = 1800) {
+  if (text.length <= maxChars) {
+    return [text];
+  }
+
+  const chunks = [];
+
+  for (let i = 0; i < text.length; i += maxChars) {
+    chunks.push(
+      text.slice(i, i + maxChars)
+    );
+  }
+
+  return chunks;
+}
+
+function buildEmbeddingRecords() {
+  const sourceRecords =
+    buildKnowledgeRecords();
+
+  const output = [];
+
+  for (const record of sourceRecords) {
+    const chunks =
+      splitForEmbedding(record.text);
+
+    chunks.forEach((chunk, index) => {
+      output.push({
+        id:
+          chunks.length === 1
+            ? record.id
+            : `${record.id}-chunk-${index + 1}`,
+
+        category: record.category,
+        type: record.type,
+        title: record.title,
+        text: chunk
+      });
+    });
+  }
+
+  return output;
+}
 
 /*
-  Better knowledge retrieval.
+  One-time indexing route.
 
-  Returns:
-  {
-    matches: [...],
-    bestScore: number
-  }
+  Open:
+  http://localhost:8787/index
+
+  This generates embeddings and upserts them
+  into your manuuconnect-index.
 */
-function searchKnowledge(query) {
-  const normalizedQuery = normalize(query);
+async function indexKnowledge(env) {
+  const records =
+    buildEmbeddingRecords();
 
-  const words = normalizedQuery
-    .split(" ")
-    .filter((word) => word.length > 2);
-
-  if (!words.length) {
-    return {
-      matches: [],
-      bestScore: 0
-    };
+  if (!records.length) {
+    throw new Error(
+      "No knowledge records found."
+    );
   }
 
-  const ranked = knowledgeIndex
-    .map((item) => {
-      const text = normalize(
-        `${item.source} ${JSON.stringify(item.content)}`
+  const texts =
+    records.map(record => record.text);
+
+  const embeddings =
+    await env.AI.run(
+      EMBEDDING_MODEL,
+      {
+        text: texts
+      }
+    );
+
+  if (
+    !embeddings ||
+    !Array.isArray(embeddings.data)
+  ) {
+    throw new Error(
+      "Embedding generation failed."
+    );
+  }
+
+  if (
+    embeddings.data.length !== records.length
+  ) {
+    throw new Error(
+      `Embedding count mismatch. Expected ${records.length}, got ${embeddings.data.length}.`
+    );
+  }
+
+  const vectors =
+    records.map((record, index) => ({
+      id: record.id,
+      values: embeddings.data[index],
+
+      metadata: {
+        category: record.category,
+        type: record.type,
+        title: record.title,
+        text: record.text
+      }
+    }));
+
+  /*
+    Upsert in batches.
+  */
+  const batchSize = 50;
+  const results = [];
+
+  for (
+    let i = 0;
+    i < vectors.length;
+    i += batchSize
+  ) {
+    const batch =
+      vectors.slice(
+        i,
+        i + batchSize
       );
 
-      let score = 0;
-      let matchedWords = 0;
+    const result =
+      await env.VECTORIZE.upsert(
+        batch
+      );
 
-      /*
-        Word matching
-      */
-      for (const word of words) {
-        if (text.includes(word)) {
-          score += 2;
-          matchedWords++;
-        }
-      }
-
-      /*
-        Exact phrase match
-      */
-      if (
-        normalizedQuery.length >= 6 &&
-        text.includes(normalizedQuery)
-      ) {
-        score += 10;
-      }
-
-      /*
-        Coverage bonus
-      */
-      const coverage =
-        words.length > 0
-          ? matchedWords / words.length
-          : 0;
-
-      score += coverage * 6;
-
-      /*
-        Source bonuses
-      */
-      if (item.source.includes("coreteam")) {
-        score += 1;
-      }
-
-      if (item.source.includes("events")) {
-        score += 1;
-      }
-
-      if (item.source.includes("mentors")) {
-        score += 1;
-      }
-
-      if (item.source.includes("faq")) {
-        score += 1;
-      }
-
-      return {
-        ...item,
-        score
-      };
-    })
-    .filter((item) => item.score > 0)
-    .sort((a, b) => b.score - a.score);
+    results.push(result);
+  }
 
   return {
-    matches: ranked.slice(0, 5),
-    bestScore: ranked[0]?.score || 0
+    records: records.length,
+    batches: results.length,
+    results
   };
 }
 
 /*
-  Search Serper.
+  Semantic search.
 */
-async function searchSerper(query, env, site) {
+async function searchVectorize(
+  query,
+  env
+) {
+  const embedding =
+    await env.AI.run(
+      EMBEDDING_MODEL,
+      {
+        text: [query]
+      }
+    );
+
+  const queryVector =
+    embedding?.data?.[0];
+
+  if (!queryVector) {
+    throw new Error(
+      "Failed to generate query embedding."
+    );
+  }
+
+  const result =
+    await env.VECTORIZE.query(
+      queryVector,
+      {
+        topK: 5,
+        returnMetadata: "all"
+      }
+    );
+
+  return result?.matches || [];
+}
+
+/*
+  Serper fallback.
+*/
+async function searchSerper(
+  query,
+  env,
+  site
+) {
   if (!env.SERPER_API_KEY) {
     return [];
   }
 
-  const searchQuery = site
-    ? `site:${site} ${query}`
-    : query;
+  const searchQuery =
+    site
+      ? `site:${site} ${query}`
+      : query;
 
   try {
-    const response = await fetch(
-      "https://google.serper.dev/search",
-      {
-        method: "POST",
-        headers: {
-          "X-API-KEY": env.SERPER_API_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          q: searchQuery,
-          gl: "in",
-          hl: "en",
-          num: 5
-        })
-      }
-    );
+    const response =
+      await fetch(
+        "https://google.serper.dev/search",
+        {
+          method: "POST",
 
-    if (!response.ok) {
-      console.error(
-        "Serper error:",
-        response.status,
-        await response.text()
+          headers: {
+            "X-API-KEY":
+              env.SERPER_API_KEY,
+
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            q: searchQuery,
+            gl: "in",
+            hl: "en",
+            num: 5
+          })
+        }
       );
 
+    if (!response.ok) {
       return [];
     }
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
-    return (data.organic || []).map((item) => ({
-      title: item.title || "",
-      link: item.link || "",
-      snippet: item.snippet || ""
+    return (
+      data.organic || []
+    ).map(item => ({
+      title:
+        item.title || "",
+
+      link:
+        item.link || "",
+
+      snippet:
+        item.snippet || ""
     }));
-  } catch (error) {
-    console.error(
-      "Serper request failed:",
-      error
-    );
 
+  } catch {
     return [];
   }
 }
 
-function formatWebResults(results, sourceName) {
-  if (!results.length) {
-    return "";
-  }
-
+function formatWebResults(
+  results,
+  source
+) {
   return results
     .map(
       (item, index) =>
-        `[${sourceName} ${index + 1}]
+        `[${source} ${index + 1}]
 Title: ${item.title}
 URL: ${item.link}
 Snippet: ${item.snippet}`
@@ -257,11 +352,9 @@ Snippet: ${item.snippet}`
     .join("\n\n");
 }
 
-/*
-  Simple greetings should not trigger web search.
-*/
 function isGreeting(message) {
-  const q = normalize(message);
+  const q =
+    normalize(message);
 
   return [
     "hi",
@@ -286,7 +379,8 @@ function isGreeting(message) {
 }
 
 function greetingResponse(message) {
-  const q = normalize(message);
+  const q =
+    normalize(message);
 
   if (
     q === "thanks" ||
@@ -304,13 +398,20 @@ export default {
     /*
       CORS
     */
-    if (request.method === "OPTIONS") {
+
+    if (
+      request.method === "OPTIONS"
+    ) {
       return new Response(null, {
         status: 204,
+
         headers: {
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin":
+            "*",
+
           "Access-Control-Allow-Methods":
             "GET, POST, OPTIONS",
+
           "Access-Control-Allow-Headers":
             "Content-Type"
         }
@@ -320,30 +421,90 @@ export default {
     /*
       Health check
     */
-    if (request.method === "GET") {
+
+    if (
+      request.method === "GET"
+    ) {
+
+      const url =
+        new URL(
+          request.url
+        );
+
+      /*
+        ONE-TIME INDEXING
+
+        After it works, remove this route
+        before production deployment.
+      */
+
+      if (
+        url.pathname === "/index"
+      ) {
+        try {
+          const result =
+            await indexKnowledge(
+              env
+            );
+
+          return jsonResponse({
+            status: "indexed",
+            ...result
+          });
+
+        } catch (error) {
+          console.error(
+            "Indexing error:",
+            error
+          );
+
+          return jsonResponse(
+            {
+              error:
+                error.message ||
+                "Indexing failed."
+            },
+            500
+          );
+        }
+      }
+
       return jsonResponse({
         status: "ok",
         service: "MANUUConnect AI",
-        model: MODEL
+        model: MODEL,
+        embeddingModel:
+          EMBEDDING_MODEL
       });
     }
 
-    if (request.method !== "POST") {
+    /*
+      POST only for chat
+    */
+
+    if (
+      request.method !== "POST"
+    ) {
       return jsonResponse(
         {
-          error: "Method not allowed."
+          error:
+            "Method not allowed."
         },
         405
       );
     }
 
     try {
+
       /*
         Read input
       */
-      const body = await request.json();
 
-      const message = body?.message;
+      const body =
+        await request.json();
+
+      const message =
+        body?.message;
 
       if (
         !message ||
@@ -351,27 +512,21 @@ export default {
       ) {
         return jsonResponse(
           {
-            error: "Please provide a message."
+            error:
+              "Please provide a message."
           },
           400
         );
       }
 
-      const cleanMessage = message.trim();
+      const cleanMessage =
+        message.trim();
 
       if (!cleanMessage) {
         return jsonResponse(
           {
-            error: "Please provide a message."
-          },
-          400
-        );
-      }
-
-      if (cleanMessage.length > 1000) {
-        return jsonResponse(
-          {
-            error: "Message is too long."
+            error:
+              "Please provide a message."
           },
           400
         );
@@ -380,59 +535,96 @@ export default {
       /*
         Greetings
       */
-      if (isGreeting(cleanMessage)) {
+
+      if (
+        isGreeting(
+          cleanMessage
+        )
+      ) {
         return jsonResponse({
-          reply: greetingResponse(cleanMessage),
+          reply:
+            greetingResponse(
+              cleanMessage
+            ),
+
           source: null
         });
       }
 
       /*
-        1. Search local MANUUConnect knowledge
+        Vector search
       */
-      const {
-        matches,
-        bestScore
-      } = searchKnowledge(cleanMessage);
+
+      const matches =
+        await searchVectorize(
+          cleanMessage,
+          env
+        );
 
       /*
-        Minimum confidence needed to trust
-        local knowledge.
+        Cosine similarity is used by your
+        Vectorize index.
+
+        We use the strongest match as the
+        initial confidence signal.
       */
-      const KNOWLEDGE_THRESHOLD = 7;
 
-      const strongKnowledgeMatch =
-        bestScore >= KNOWLEDGE_THRESHOLD;
+      const bestScore =
+        matches[0]?.score || 0;
 
-      let knowledgeContext = "";
+      /*
+        Start with a conservative threshold.
+        We can tune this after testing.
+      */
 
-      if (strongKnowledgeMatch) {
-        knowledgeContext = matches
-          .map((item) => {
-            return `[MANUUConnect Knowledge]
-Source: ${item.source}
+      const VECTOR_THRESHOLD = 0.55;
 
-${JSON.stringify(
-  item.content,
-  null,
-  2
-)}`;
-          })
-          .join("\n\n");
+      const strongMatches =
+        bestScore >= VECTOR_THRESHOLD
+          ? matches
+          : [];
+
+      let context = "";
+      let source = null;
+
+      /*
+        Strong Vectorize result
+      */
+
+      if (
+        strongMatches.length > 0
+      ) {
+
+        context =
+          strongMatches
+            .map(match => {
+
+              const metadata =
+                match.metadata || {};
+
+              return `[MANUUConnect Knowledge]
+Category: ${metadata.category || ""}
+Type: ${metadata.type || ""}
+Title: ${metadata.title || ""}
+
+${metadata.text || ""}`;
+
+            })
+            .join("\n\n");
+
+        source =
+          "MANUUConnect knowledge";
       }
 
       /*
-        2. If local knowledge is weak,
-           use trusted-source fallback.
+        No strong Vectorize result:
+        search official website.
       */
-      let webContext = "";
-      let webSource = "";
 
-      if (!strongKnowledgeMatch) {
+      if (
+        !context
+      ) {
 
-        /*
-          First: manuuconnect.in
-        */
         const websiteResults =
           await searchSerper(
             cleanMessage,
@@ -440,141 +632,159 @@ ${JSON.stringify(
             "manuuconnect.in"
           );
 
-        if (websiteResults.length > 0) {
-          webContext = formatWebResults(
-            websiteResults,
-            "manuuconnect.in"
-          );
+        if (
+          websiteResults.length > 0
+        ) {
 
-          webSource = "manuuconnect.in";
-        } else {
+          context =
+            `
+Trusted external source:
+manuuconnect.in
 
-          /*
-            Second: LinkedIn
-          */
-          const linkedinResults =
-            await searchSerper(
-              `MANUUConnect ${cleanMessage}`,
-              env,
-              "linkedin.com"
-            );
+${formatWebResults(
+  websiteResults,
+  "manuuconnect.in"
+)}
+`;
 
-          if (linkedinResults.length > 0) {
-            webContext = formatWebResults(
-              linkedinResults,
-              "LinkedIn"
-            );
-
-            webSource = "LinkedIn";
-          }
+          source =
+            "manuuconnect.in";
         }
       }
 
       /*
-        3. Build final context.
+        If official website has nothing,
+        search LinkedIn.
       */
-      let context = "";
 
-      let source = null;
+      if (
+        !context
+      ) {
 
-      if (strongKnowledgeMatch) {
-        context = knowledgeContext;
-        source = "MANUUConnect knowledge";
-      } else if (webContext) {
-        context = `
-Trusted external information:
+        const linkedinResults =
+          await searchSerper(
+            `MANUUConnect ${cleanMessage}`,
+            env,
+            "linkedin.com"
+          );
 
-${webContext}
+        if (
+          linkedinResults.length > 0
+        ) {
+
+          context =
+            `
+Trusted external source:
+LinkedIn
+
+${formatWebResults(
+  linkedinResults,
+  "LinkedIn"
+)}
 `;
-        source = webSource;
-      } else {
-        context = `
-No matching MANUUConnect information was
-found in the local knowledge or trusted sources.
+
+          source =
+            "LinkedIn";
+        }
+      }
+
+      /*
+        Nothing found anywhere.
+      */
+
+      if (
+        !context
+      ) {
+        context =
+          `
+No reliable MANUUConnect information
+was found for this question.
 `;
       }
 
       /*
-        4. AI
+        AI prompt
       */
+
       const systemPrompt = `
-You are MANUUConnect AI for manuuconnect.in.
+You are MANUUConnect AI.
 
-You help with:
+You are the AI assistant for the
+MANUUConnect student community.
+
+Your job is to answer questions about:
+
 - MANUUConnect
-- its team and members
-- projects
-- events
-- achievements
-- mentors and alumni
-- activities
-- opportunities
-- website information
-- student learning and career guidance
+- Team members
+- Mentors
+- Alumni
+- Events
+- Projects
+- Achievements
+- Internships
+- Referrals
+- FAQs
+- Student guidance
+- Learning and career guidance
 
-Information priority:
+Priority:
 
 1. MANUUConnect knowledge
 2. manuuconnect.in
 3. MANUUConnect LinkedIn
 
-Use the provided information carefully.
+Use the provided information.
 
-If local MANUUConnect knowledge contains the answer,
-use it as the primary source.
+For factual MANUUConnect questions,
+do not invent missing facts.
 
-If trusted external information is provided,
-use it only as a secondary source.
-
-Never invent MANUUConnect facts.
-
-If the available information does not contain
-the answer, say:
+If reliable information is not provided,
+say:
 
 "I don't have that information yet."
 
-Normal greetings are allowed.
+For student guidance questions,
+you may provide useful general guidance.
 
-Keep the answer short.
+Keep responses short and readable.
 
-Use short paragraphs.
+Use proper paragraphs.
 
-Leave a blank line between separate points.
+For multiple items, use bullet points
+or numbered lists.
 
-For multiple items, use bullet points or numbered lines.
-
-Use labels such as:
-Date:
-Type:
-Participants:
+Leave blank lines between sections.
 
 Do not repeat the user's question.
 
-Do not add unnecessary information.
-
-USER QUESTION:
+USER:
 ${cleanMessage}
 
-AVAILABLE INFORMATION:
+RETRIEVED INFORMATION:
 ${context}
 `;
 
-      const result = await env.AI.run(
-        MODEL,
-        {
-          messages: [
-            {
-              role: "system",
-              content: systemPrompt
-            },
-            {
-              role: "user",
-              content: cleanMessage
-            }
-          ],
-          max_tokens: 300
-        }
-      );
+      const result =
+        await env.AI.run(
+          MODEL,
+          {
+            messages: [
+              {
+                role: "system",
+                content:
+                  systemPrompt
+              },
+
+              {
+                role: "user",
+                content:
+                  cleanMessage
+              }
+            ],
+
+            max_tokens: 300
+          }
+        );
 
       const reply =
         result?.response?.trim() ||
@@ -582,13 +792,15 @@ ${context}
 
       return jsonResponse({
         reply,
-        source
+        source,
+        vectorScore:
+          bestScore || null
       });
 
     } catch (error) {
 
       console.error(
-        "MANUUConnect AI error:",
+        "MANUUConnect error:",
         error
       );
 
